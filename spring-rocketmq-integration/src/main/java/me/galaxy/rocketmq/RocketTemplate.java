@@ -2,7 +2,7 @@ package me.galaxy.rocketmq;
 
 /**
  * @Description
- * @Author duanxiaolei@bytedance.com
+ * @Author galaxy-captain
  * @Date 2019-06-17 14:18
  **/
 public class RocketTemplate {

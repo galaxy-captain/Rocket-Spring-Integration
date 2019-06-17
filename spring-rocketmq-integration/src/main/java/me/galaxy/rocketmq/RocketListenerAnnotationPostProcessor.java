@@ -25,7 +25,7 @@ import static me.galaxy.rocketmq.RocketBeanDefinitionConstant.*;
 
 /**
  * @Description
- * @Author duanxiaolei@bytedance.com
+ * @Author galaxy-captain
  * @Date 2019-06-17 15:27
  **/
 public class RocketListenerAnnotationPostProcessor implements BeanDefinitionRegistryPostProcessor {

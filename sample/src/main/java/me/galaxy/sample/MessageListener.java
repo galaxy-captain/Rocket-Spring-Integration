@@ -4,7 +4,7 @@ import me.galaxy.rocketmq.RocketListener;
 
 /**
  * @Description
- * @Author duanxiaolei@bytedance.com
+ * @Author galaxy-captain
  * @Date 2019-06-17 17:34
  **/
 public class MessageListener {

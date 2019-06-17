@@ -3,7 +3,7 @@ package me.galaxy.rocketmq;
 import java.lang.annotation.*;
 
 /**
- * @author duanxiaolei@bytedance.com
+ * @author galaxy-captain
  * @description
  * @date 2019-06-17 14:00
  **/

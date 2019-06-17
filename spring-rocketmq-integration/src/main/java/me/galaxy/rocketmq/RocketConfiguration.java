@@ -7,7 +7,7 @@ import java.util.List;
 
 /**
  * @Description
- * @Author duanxiaolei@bytedance.com
+ * @Author galaxy-captain
  * @Date 2019-06-17 14:21
  **/
 public class RocketConfiguration {
