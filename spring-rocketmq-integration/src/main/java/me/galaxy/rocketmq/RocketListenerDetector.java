@@ -2,10 +2,12 @@ package me.galaxy.rocketmq;
 
 import me.galaxy.rocketmq.annotation.RocketListener;
 import me.galaxy.rocketmq.annotation.RocketNameServer;
-import me.galaxy.rocketmq.listener.RegisterMessageListener;
+import me.galaxy.rocketmq.listener.wrapper.MessageListenerConcurrentlyWrapper;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
+import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.PropertyValues;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -78,7 +80,7 @@ public class RocketListenerDetector implements BeanPostProcessor, BeanFactoryAwa
             if (StringUtils.isEmpty(key)) key = "*";
 
             String consumerName = buildConsumerName(beanName, method.getName(), instance, consumerGroup, topic, tag, key);
-            DefaultMQPushConsumer consumer = buildConsumerWithReflect(bean, method, instance, consumerGroup, topic, tag, key);
+            DefaultMQPushConsumer consumer = buildConsumerWithRocketListener(listener, rc, bean, method, instance, consumerGroup, topic, tag, key);
 
             // 设置 Name Server 地址
             setConsumerNameServer(rc, bean, listener, consumer);
@@ -115,14 +117,6 @@ public class RocketListenerDetector implements BeanPostProcessor, BeanFactoryAwa
         consumer.setNamesrvAddr(nameServer);
     }
 
-    /**
-     * @param beanName
-     * @param methodName
-     * @param topic
-     * @param tag
-     * @param key
-     * @return
-     */
     private String buildConsumerName(String beanName, String methodName, String instance, String consumerGroup, String topic, String tag, String key) {
 
         if (StringUtils.isEmpty(instance)) {
@@ -133,18 +127,21 @@ public class RocketListenerDetector implements BeanPostProcessor, BeanFactoryAwa
 
     }
 
-    /**
-     * @param object
-     * @param method
-     * @param consumerGroup
-     * @param topic
-     * @param tag
-     * @param key
-     * @return
-     */
-    private DefaultMQPushConsumer buildConsumerWithReflect(Object object, Method method, String instance, String consumerGroup, String topic, String tag, String key) {
+    private DefaultMQPushConsumer buildConsumerWithRocketListener(RocketListener listener,
+                                                                  RocketConfiguration configuration,
+                                                                  Object object,
+                                                                  Method method,
+                                                                  String instance,
+                                                                  String consumerGroup,
+                                                                  String topic,
+                                                                  String tag,
+                                                                  String key) {
 
         DefaultMQPushConsumer consumer = new DefaultMQPushConsumer(consumerGroup);
+
+        if (!StringUtils.isEmpty(instance)) {
+            consumer.setInstanceName(instance);
+        }
 
         try {
             consumer.subscribe(topic, tag);
@@ -152,11 +149,31 @@ public class RocketListenerDetector implements BeanPostProcessor, BeanFactoryAwa
             throw new RuntimeException(String.format("RocketMQ Consumer订阅(topic,tag)=[%s,%s]失败", topic, tag), e);
         }
 
-        RegisterMessageListener registerMessageListener = new RegisterMessageListener(object, method, key);
+        int delayTimeLevel = determineDelayTimeLevel(listener, configuration);
 
-        consumer.setMessageListener(registerMessageListener);
+        Class<? extends Throwable>[] ignoredExceptions = listener.ignoredExceptions();
+
+        MessageListenerConcurrently messageListenerConcurrently
+                = new MessageListenerConcurrentlyWrapper(object, method, key, delayTimeLevel, ignoredExceptions);
+
+        consumer.setMessageListener(messageListenerConcurrently);
 
         return consumer;
+    }
+
+    private int determineDelayTimeLevel(RocketListener listener, RocketConfiguration configuration) {
+
+        int delayTimeLevel = 0;
+
+        if (configuration != null && configuration.getDelayTimeLevel() > Integer.MIN_VALUE) {
+            delayTimeLevel = configuration.getDelayTimeLevel();
+        }
+
+        if (listener.delayTimeLevel() > Integer.MIN_VALUE) {
+            delayTimeLevel = listener.delayTimeLevel();
+        }
+
+        return delayTimeLevel;
     }
 
     private void registerRocketMQConsumer(String beanName, DefaultMQPushConsumer consumer) {
@@ -175,5 +192,14 @@ public class RocketListenerDetector implements BeanPostProcessor, BeanFactoryAwa
             }
         });
     }
+
+    private String getStringProperty(PropertyValues pvs, String propertyName) {
+        String value = (String) pvs.getPropertyValue(propertyName).getValue();
+        if (value.startsWith("$")) {
+            value = beanFactory.resolveEmbeddedValue(value);
+        }
+        return value;
+    }
+
 
 }

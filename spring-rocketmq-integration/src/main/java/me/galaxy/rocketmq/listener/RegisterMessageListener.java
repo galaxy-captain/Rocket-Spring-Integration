@@ -1,10 +1,15 @@
 package me.galaxy.rocketmq.listener;
 
+import com.alibaba.fastjson.JSONException;
+import me.galaxy.rocketmq.utils.MessageConverter;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import org.apache.rocketmq.common.message.MessageExt;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -13,23 +18,43 @@ import java.util.List;
  * @Author galaxy-captain
  * @Date 2019-06-18 11:23
  **/
-public class RegisterMessageListener implements MessageListenerConcurrently {
+public abstract class RegisterMessageListener implements MessageListenerConcurrently {
 
-    private Object consumerClass;
+    private static final Logger logger = LoggerFactory.getLogger(RegisterMessageListener.class);
 
-    private Method consumerMethod;
+    protected Object consumerClass;
+
+    protected Method consumerMethod;
 
     protected String key;
 
-    public RegisterMessageListener(Object consumerClass, Method consumerMethod, String key) {
+    protected int delayLevel;
+
+    protected Class<?> convertToClass;
+
+    protected Class<? extends Throwable>[] ignorableExceptions;
+
+    public RegisterMessageListener(Object consumerClass, Method consumerMethod, String key, int delayLevel, Class<? extends Throwable>[] ignorableExceptions) {
         this.consumerClass = consumerClass;
         this.consumerMethod = consumerMethod;
         this.key = key;
+        this.delayLevel = delayLevel;
+        this.ignorableExceptions = ignorableExceptions;
+
+        this.consumerMethod.setAccessible(true);
+        this.convertToClass = this.consumerMethod.getParameterTypes()[0];
     }
 
-    @Override
-    public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> messageList, ConsumeConcurrentlyContext context) {
-        return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+    public class IllegalRocketListenerParameterException extends RuntimeException {
+        public IllegalRocketListenerParameterException(String s) {
+            super(s);
+        }
+    }
+
+    public class IllegalRocketListenerStatusException extends RuntimeException {
+        public IllegalRocketListenerStatusException(String s) {
+            super(s);
+        }
     }
 
 }

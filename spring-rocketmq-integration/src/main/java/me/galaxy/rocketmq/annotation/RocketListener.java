@@ -1,5 +1,7 @@
 package me.galaxy.rocketmq.annotation;
 
+import me.galaxy.rocketmq.exception.NoException;
+
 import java.lang.annotation.*;
 
 /**
@@ -25,5 +27,9 @@ public @interface RocketListener {
     String tag() default "*";
 
     String key() default "*";
+
+    int delayTimeLevel() default Integer.MIN_VALUE;
+
+    Class<? extends Throwable>[] ignoredExceptions() default NoException.class;
 
 }

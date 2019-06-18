@@ -13,7 +13,7 @@ import java.util.function.BiConsumer;
 
 /**
  * @Description
- * @Author duanxiaolei@bytedance.com
+ * @Author galaxy-captain
  * @Date 2019-06-18 15:26
  **/
 public class RocketInLifecycle implements SmartLifecycle {

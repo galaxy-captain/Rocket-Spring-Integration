@@ -14,6 +14,16 @@ public class RocketConfiguration {
 
     private List<String> nameServer = new LinkedList<String>();
 
+    private int delayTimeLevel = Integer.MIN_VALUE;
+
+    public int getDelayTimeLevel() {
+        return delayTimeLevel;
+    }
+
+    public void setDelayTimeLevel(int delayTimeLevel) {
+        this.delayTimeLevel = delayTimeLevel;
+    }
+
     public void setNameServer(String nameServer) {
         this.nameServer = Arrays.asList(nameServer.split(";"));
     }

@@ -6,7 +6,7 @@ import java.lang.annotation.*;
 
 /**
  * @Description
- * @Author duanxiaolei@bytedance.com
+ * @Author galaxy-captain
  * @Date 2019-06-18 17:26
  **/
 @Documented
