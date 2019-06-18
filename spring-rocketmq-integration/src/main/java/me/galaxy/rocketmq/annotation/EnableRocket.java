@@ -1,5 +1,6 @@
-package me.galaxy.rocketmq;
+package me.galaxy.rocketmq.annotation;
 
+import me.galaxy.rocketmq.RocketBootstrap;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;

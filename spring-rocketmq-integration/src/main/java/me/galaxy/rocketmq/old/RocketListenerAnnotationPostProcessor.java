@@ -1,5 +1,6 @@
-package me.galaxy.rocketmq;
+package me.galaxy.rocketmq.old;
 
+import me.galaxy.rocketmq.annotation.RocketListener;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +22,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static me.galaxy.rocketmq.RocketBeanDefinitionConstant.*;
+import static me.galaxy.rocketmq.old.RocketBeanDefinitionConstant.*;
 
 /**
  * @Description
@@ -45,7 +46,6 @@ public class RocketListenerAnnotationPostProcessor implements BeanDefinitionRegi
 
             try {
                 beanClass = resolveBeanClass(beanDefinition, registry);
-//                beanClass = resolveClass(beanDefinition.getBeanClassName());
             } catch (ClassNotFoundException e) {
                 throw new BeanDefinitionStoreException(String.format("解析BeanDefinition失败，找不到类：%s", beanDefinition.getBeanClassName()), e);
             }
@@ -67,6 +67,8 @@ public class RocketListenerAnnotationPostProcessor implements BeanDefinitionRegi
                 mpv.add(TOPIC, listener.topic());
                 mpv.add(TAG, listener.tag());
                 mpv.add(KEY, listener.key());
+                mpv.add(CONSUMER_BEAN_NAME, beanName);
+                mpv.add(CONSUMER_METHOD, entry.getKey());
 
                 registry.registerBeanDefinition(beanName, rocketConsumer);
 

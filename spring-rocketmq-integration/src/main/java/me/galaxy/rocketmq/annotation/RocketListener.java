@@ -1,4 +1,4 @@
-package me.galaxy.rocketmq;
+package me.galaxy.rocketmq.annotation;
 
 import java.lang.annotation.*;
 
@@ -14,12 +14,16 @@ public @interface RocketListener {
 
     String template() default "";
 
+    String nameServer() default "";
+
+    String instance() default "";
+
     String consumerGroup() default "";
 
     String topic() default "";
 
-    String tag() default "";
+    String tag() default "*";
 
-    String key() default "";
+    String key() default "*";
 
 }

@@ -1,6 +1,7 @@
 package me.galaxy.sample;
 
-import me.galaxy.rocketmq.EnableRocket;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
@@ -8,14 +9,20 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * @Author galaxy-captain
  * @Date 2019-06-17 20:52
  **/
-@EnableRocket
 public class Main {
+
+    public static final Logger logger = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) {
 
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:applicationContext.xml");
-        MessageListener messageListener = context.getBean("messageListener1", MessageListener.class);
-        messageListener.service("aaaa");
+
+//        RegisterBean registerBean = (RegisterBean) context.getBean("testRegisterBean");
+//        System.out.println(registerBean.test);
+
+//        MessageListener messageListener = context.getBean(MessageListener.class);
+//        messageListener.service("test message");
+//        System.out.println(context.getClass().getSimpleName());
 
     }
 

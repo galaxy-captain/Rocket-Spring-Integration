@@ -1,4 +1,4 @@
-package me.galaxy.rocketmq;
+package me.galaxy.rocketmq.old;
 
 /**
  * @Description
@@ -26,4 +26,8 @@ public interface RocketBeanDefinitionConstant {
      *关键字
      */
     String KEY = "key";
+
+    String CONSUMER_BEAN_NAME = "consumerBeanName";
+
+    String CONSUMER_METHOD = "consumerMethod";
 }
