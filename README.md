@@ -41,28 +41,26 @@ public class MessageConsumer{
 
 优先级：方法级 > 类级 > 全局级，高优先级配置覆盖低优先级配置。
 
-## DownLoad
-
-Step 1. Add the JitPack repository to your build file
-```
-	<repositories>
-		<repository>
-		    <id>jitpack.io</id>
-		    <url>https://jitpack.io</url>
-		</repository>
-	</repositories>
-```
-Step 2. Add the dependency
-
-```
-	<dependency>
-	    <groupId>com.github.galaxy-captain.spring-rocketmq</groupId>
-	    <artifactId>spring-rocketmq-integration</artifactId>
-	    <version>0.0.1</version>
-	</dependency>
-```
-
 ## 使用教程
+> 添加项目的Maven依赖
+```xml
+<!--添加JitPack repository到Maven的pom.xml-->
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+
+<!--添加依赖到dependencies-->
+<dependency>
+    <groupId>com.github.galaxy-captain.spring-rocketmq</groupId>
+    <artifactId>spring-rocketmq-integration</artifactId>
+    <version>0.0.1</version>
+</dependency>
+```
+
+
 1. 使用@EnableRocket开启功能
    ```java
    @EnableRocket
