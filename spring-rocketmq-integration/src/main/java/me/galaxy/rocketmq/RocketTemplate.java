@@ -7,9 +7,9 @@ package me.galaxy.rocketmq;
  **/
 public class RocketTemplate {
 
-    private RocketConfiguration configuration;
+    private RocketConfigurationBean configuration;
 
-    public RocketTemplate(RocketConfiguration configuration) {
+    public RocketTemplate(RocketConfigurationBean configuration) {
         this.configuration = configuration;
     }
 

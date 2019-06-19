@@ -14,8 +14,6 @@ import java.lang.annotation.*;
 @Target(ElementType.METHOD)
 public @interface RocketListener {
 
-    String template() default "";
-
     String nameServer() default "";
 
     String instance() default "";

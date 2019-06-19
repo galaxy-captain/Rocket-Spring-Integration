@@ -1,6 +1,6 @@
 package me.galaxy.sample;
 
-import me.galaxy.rocketmq.RocketConfiguration;
+import me.galaxy.rocketmq.RocketConfigurationBean;
 import me.galaxy.rocketmq.annotation.EnableRocket;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,9 +22,9 @@ public class RocketMQConfiguration {
     }
 
     @Bean
-    public RocketConfiguration rocketConfiguration() {
+    public RocketConfigurationBean rocketConfiguration() {
 
-        RocketConfiguration rocketConfiguration = new RocketConfiguration();
+        RocketConfigurationBean rocketConfiguration = new RocketConfigurationBean();
         rocketConfiguration.setNameServer("127.0.0.1:9876");
 
         return rocketConfiguration;

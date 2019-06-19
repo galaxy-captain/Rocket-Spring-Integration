@@ -10,7 +10,7 @@ import java.util.List;
  * @Author galaxy-captain
  * @Date 2019-06-17 14:21
  **/
-public class RocketConfiguration {
+public class RocketConfigurationBean {
 
     private List<String> nameServer = new LinkedList<String>();
 

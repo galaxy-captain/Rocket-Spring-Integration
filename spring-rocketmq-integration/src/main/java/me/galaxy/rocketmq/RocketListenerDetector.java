@@ -57,9 +57,9 @@ public class RocketListenerDetector implements BeanPostProcessor, BeanFactoryAwa
 
         if (annotatedMethods.isEmpty()) return;
 
-        RocketConfiguration rc = null;
+        RocketConfigurationBean rc = null;
         try {
-            rc = beanFactory.getBean(RocketConfiguration.class);
+            rc = beanFactory.getBean(RocketConfigurationBean.class);
         } catch (BeansException e) {
             // do nothing
         }
@@ -90,7 +90,7 @@ public class RocketListenerDetector implements BeanPostProcessor, BeanFactoryAwa
 
     }
 
-    private void setConsumerNameServer(RocketConfiguration rc, Object clazz, RocketListener methodAnnotation, DefaultMQPushConsumer consumer) {
+    private void setConsumerNameServer(RocketConfigurationBean rc, Object clazz, RocketListener methodAnnotation, DefaultMQPushConsumer consumer) {
 
         String nameServer = null;
 
@@ -128,7 +128,7 @@ public class RocketListenerDetector implements BeanPostProcessor, BeanFactoryAwa
     }
 
     private DefaultMQPushConsumer buildConsumerWithRocketListener(RocketListener listener,
-                                                                  RocketConfiguration configuration,
+                                                                  RocketConfigurationBean configuration,
                                                                   Object object,
                                                                   Method method,
                                                                   String instance,
@@ -161,7 +161,7 @@ public class RocketListenerDetector implements BeanPostProcessor, BeanFactoryAwa
         return consumer;
     }
 
-    private int determineDelayTimeLevel(RocketListener listener, RocketConfiguration configuration) {
+    private int determineDelayTimeLevel(RocketListener listener, RocketConfigurationBean configuration) {
 
         int delayTimeLevel = 0;
 

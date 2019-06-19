@@ -25,7 +25,7 @@ public class MessageListener {
             topic = "test_topic",
             tag = "test_tag",
             delayTimeLevel = 2,
-            ignoredExceptions = JSONException.class
+            ignoredExceptions = {JSONException.class}
     )
     public ConsumeConcurrentlyStatus service(SimpleMessage message, MessageExt messageExt, ConsumeConcurrentlyContext context) {
 
