@@ -75,5 +75,8 @@ public class MessageConsumer{
     ```
 
 ## 结束语
+> 功能不断完善中......
+
+#### 您的 ★Star 是对我工作的肯定。
 #### 有任何事情，请留言或邮箱联系我。
 邮箱：goskyer@163.com
