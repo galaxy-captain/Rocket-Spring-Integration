@@ -13,6 +13,7 @@
     <modules>
         <module>sample</module>
         <module>spring-rocketmq-integration</module>
+        <module>rocektmq-spring</module>
     </modules>
 
     <properties>

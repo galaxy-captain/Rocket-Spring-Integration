@@ -27,7 +27,7 @@ public class ConvertMessageListenerWrapper extends IgnoredExceptionListenerWrapp
     }
 
     @Override
-    protected ConsumeConcurrentlyStatus consumeMessage2(List<MessageExt> messageList, ConsumeConcurrentlyContext context) {
+    protected ConsumeConcurrentlyStatus ignoredExceptionConsumerMessageWrapper(List<MessageExt> messageList, ConsumeConcurrentlyContext context) {
 
         try {
             return invokeMethod(this.consumerClass, this.consumerMethod, messageList, context);

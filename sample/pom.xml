@@ -17,6 +17,12 @@
             <version>0.5</version>
         </dependency>
 
+        <dependency>
+            <groupId>me.galaxy</groupId>
+            <artifactId>rocektmq-spring</artifactId>
+            <version>0.5</version>
+        </dependency>
+
     </dependencies>
 
 </project>

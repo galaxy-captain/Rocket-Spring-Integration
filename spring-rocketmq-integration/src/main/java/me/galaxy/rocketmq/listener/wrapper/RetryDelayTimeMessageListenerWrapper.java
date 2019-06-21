@@ -29,9 +29,9 @@ public abstract class RetryDelayTimeMessageListenerWrapper extends RegisterMessa
         // consumer设置延迟重试的时间
         context.setDelayLevelWhenNextConsume(this.delayLevel);
 
-        return consumeMessage1(messageList, context);
+        return retryDelayConsumerMessageWrapper(messageList, context);
     }
 
-    protected abstract ConsumeConcurrentlyStatus consumeMessage1(List<MessageExt> messageList, ConsumeConcurrentlyContext context);
+    protected abstract ConsumeConcurrentlyStatus retryDelayConsumerMessageWrapper(List<MessageExt> messageList, ConsumeConcurrentlyContext context);
 
 }

@@ -1,5 +1,6 @@
 package me.galaxy.sample;
 
+import me.galaxy.rocket.annotation.EnableRocketMQ;
 import me.galaxy.rocketmq.RocketConfigurationBean;
 import me.galaxy.rocketmq.annotation.EnableRocket;
 import org.springframework.context.annotation.Bean;
@@ -12,7 +13,7 @@ import javax.annotation.PostConstruct;
  * @Author galaxy-captain
  * @Date 2019-06-18 13:11
  **/
-@EnableRocket
+@EnableRocketMQ
 @Configuration
 public class RocketMQConfiguration {
 

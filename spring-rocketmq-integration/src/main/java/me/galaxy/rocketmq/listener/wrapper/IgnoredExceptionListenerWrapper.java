@@ -28,11 +28,11 @@ public abstract class IgnoredExceptionListenerWrapper extends RetryDelayTimeMess
     }
 
     @Override
-    protected ConsumeConcurrentlyStatus consumeMessage1(List<MessageExt> messageList, ConsumeConcurrentlyContext context) {
+    protected ConsumeConcurrentlyStatus retryDelayConsumerMessageWrapper(List<MessageExt> messageList, ConsumeConcurrentlyContext context) {
 
         try {
             // 执行下层业务逻辑
-            return consumeMessage2(messageList, context);
+            return ignoredExceptionConsumerMessageWrapper(messageList, context);
         } catch (Exception exception) {
 
             // 可以被忽略的异常
@@ -49,6 +49,6 @@ public abstract class IgnoredExceptionListenerWrapper extends RetryDelayTimeMess
         return new IgnorableExceptions(exceptions);
     }
 
-    protected abstract ConsumeConcurrentlyStatus consumeMessage2(List<MessageExt> messageList, ConsumeConcurrentlyContext context);
+    protected abstract ConsumeConcurrentlyStatus ignoredExceptionConsumerMessageWrapper(List<MessageExt> messageList, ConsumeConcurrentlyContext context);
 
 }
