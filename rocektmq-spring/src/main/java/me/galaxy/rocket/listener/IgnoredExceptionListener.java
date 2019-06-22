@@ -5,8 +5,11 @@ import me.galaxy.rocket.config.ExceptionIgnore;
 import me.galaxy.rocket.exception.IgnorableExceptions;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
+import org.apache.rocketmq.client.consumer.listener.ConsumeOrderlyContext;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.apache.rocketmq.common.message.MessageQueue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.classify.BinaryExceptionClassifier;
 
 import java.lang.reflect.Method;
@@ -19,13 +22,15 @@ import java.util.List;
  **/
 public abstract class IgnoredExceptionListener extends AbstractMessageListener {
 
+    private static final Logger logger = LoggerFactory.getLogger(IgnoredExceptionListener.class);
+
     protected IgnorableExceptions ignorableExceptions;
 
     protected BinaryExceptionClassifier classifier;
 
     public IgnoredExceptionListener(Object consumerClass,
                                     Method consumerMethod,
-                                    ConsumerConfig config) throws Exception {
+                                    ConsumerConfig config) {
 
         super(consumerClass, consumerMethod, config);
 
@@ -34,10 +39,11 @@ public abstract class IgnoredExceptionListener extends AbstractMessageListener {
     }
 
     @Override
-    protected Object consumeMessage(List<MessageExt> messageExtList, MessageQueue queue) {
+    protected Object consumeMessage(List<MessageExt> messageExtList, ConsumeConcurrentlyContext concurrentlyContext, ConsumeOrderlyContext orderlyContext) {
+
         try {
             // 执行下层业务逻辑
-            return ignoredExceptionConsumerMessageWrapper(messageExtList, queue);
+            return ignoredExceptionConsumerMessageWrapper(messageExtList, concurrentlyContext, orderlyContext);
         } catch (Exception exception) {
 
             // 可以被忽略的异常
@@ -50,8 +56,14 @@ public abstract class IgnoredExceptionListener extends AbstractMessageListener {
                 return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
             }
 
+            // 打印异常信息
+            if (logger.isErrorEnabled()) {
+                logger.error(exception.getMessage());
+            }
+
             throw exception;
         }
+
     }
 
     private IgnorableExceptions buildIgnorableExceptions(Class<? extends Throwable>[] exceptions) {
@@ -67,6 +79,6 @@ public abstract class IgnoredExceptionListener extends AbstractMessageListener {
         return false;
     }
 
-    protected abstract Object ignoredExceptionConsumerMessageWrapper(List<MessageExt> messageList, MessageQueue queue);
+    protected abstract Object ignoredExceptionConsumerMessageWrapper(List<MessageExt> messageList, ConsumeConcurrentlyContext concurrentlyContext, ConsumeOrderlyContext orderlyContext);
 
 }

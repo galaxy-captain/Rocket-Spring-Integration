@@ -11,15 +11,15 @@
 
     <dependencies>
 
-        <dependency>
-            <groupId>me.galaxy</groupId>
-            <artifactId>spring-rocketmq-integration</artifactId>
-            <version>0.5</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>me.galaxy</groupId>-->
+<!--            <artifactId>spring-rocketmq-integration</artifactId>-->
+<!--            <version>0.5</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>me.galaxy</groupId>
-            <artifactId>rocektmq-spring</artifactId>
+            <artifactId>rocketmq-spring</artifactId>
             <version>0.5</version>
         </dependency>
 

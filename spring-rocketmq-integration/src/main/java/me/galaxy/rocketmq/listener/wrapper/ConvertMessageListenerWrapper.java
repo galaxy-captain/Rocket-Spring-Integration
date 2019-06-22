@@ -64,8 +64,9 @@ public class ConvertMessageListenerWrapper extends IgnoredExceptionListenerWrapp
 
                 ConsumeConcurrentlyStatus result = determineBackStatus(status);
 
-                if (result == ConsumeConcurrentlyStatus.RECONSUME_LATER)
+                if (result == ConsumeConcurrentlyStatus.RECONSUME_LATER) {
                     return ConsumeConcurrentlyStatus.RECONSUME_LATER;
+                }
 
             } catch (JSONException e) {
                 String em = String.format("JSON转换Class失败，json=%s,class=%s", strBody, this.convertToClass.getName());

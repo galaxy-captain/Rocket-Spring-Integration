@@ -5,6 +5,9 @@ import me.galaxy.rocket.config.ExceptionIgnore;
 import org.apache.rocketmq.client.consumer.listener.*;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.apache.rocketmq.common.message.MessageQueue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -15,6 +18,8 @@ import java.util.List;
  * @Date 2019-06-21 19:10
  **/
 public abstract class AbstractMessageListener implements MessageListenerConcurrently, MessageListenerOrderly {
+
+    private static final Logger logger = LoggerFactory.getLogger(AbstractMessageListener.class);
 
     protected Object consumerClass;
 
@@ -29,9 +34,9 @@ public abstract class AbstractMessageListener implements MessageListenerConcurre
      */
     private int delayLevelWhenNextConsume;
 
-    /**
-     *
-     */
+    // /**
+    // *
+    // */
     //private int ackIndex;
 
     /**
@@ -39,13 +44,14 @@ public abstract class AbstractMessageListener implements MessageListenerConcurre
      */
     private long suspendCurrentQueueTimeMillis;
 
-    /**
-     *
-     */
+    ///**
+    // *
+    // */
     //private boolean autoCommit;
+
     public AbstractMessageListener(Object consumerClass,
                                    Method consumerMethod,
-                                   ConsumerConfig config) throws Exception {
+                                   ConsumerConfig config) {
 
         this.consumerClass = consumerClass;
         this.consumerMethod = consumerMethod;
@@ -53,14 +59,34 @@ public abstract class AbstractMessageListener implements MessageListenerConcurre
         this.exceptionIgnores = this.createExceptionIgnores(config.getExceptionIgnores());
         this.delayLevelWhenNextConsume = config.getDelayTimeLevel();
         this.suspendCurrentQueueTimeMillis = config.getSuspendTimeMillis();
+
+        this.consumerMethod.setAccessible(true);
     }
 
-    private ExceptionIgnore[] createExceptionIgnores(Class<? extends ExceptionIgnore>[] classes) throws IllegalAccessException, InstantiationException {
+    private ExceptionIgnore[] createExceptionIgnores(Class<? extends ExceptionIgnore>[] classes) {
 
         ExceptionIgnore[] exceptionIgnores = new ExceptionIgnore[classes.length];
 
         for (int i = 0; i < classes.length; i++) {
-            exceptionIgnores[i] = classes[i].newInstance();
+
+            try {
+                exceptionIgnores[i] = classes[i].newInstance();
+            } catch (InstantiationException | IllegalAccessException e) {
+
+                if (logger.isErrorEnabled()) {
+                    logger.error(
+                            String.format(
+                                    "初始化%s[%s]时，创建%s失败",
+                                    this.consumerClass.getClass().getName(),
+                                    this.consumerMethod.getName(),
+                                    classes[i].getName()
+                            )
+                    );
+                } else {
+                    e.printStackTrace();
+                }
+            }
+
         }
 
         return exceptionIgnores;
@@ -74,7 +100,7 @@ public abstract class AbstractMessageListener implements MessageListenerConcurre
         int msgLength = messages.size();
 
         // 执行下层逻辑
-        Object result = consumeMessage(messages, context.getMessageQueue());
+        Object result = consumeMessage(messages, context, null);
 
         return convertConcurrentlyConsumeResult(result, msgLength, context);
     }
@@ -85,7 +111,7 @@ public abstract class AbstractMessageListener implements MessageListenerConcurre
         context.setSuspendCurrentQueueTimeMillis(this.suspendCurrentQueueTimeMillis);
 
         // 执行下层逻辑
-        Object result = consumeMessage(messages, context.getMessageQueue());
+        Object result = consumeMessage(messages, null, context);
 
         return convertOrderlyConsumeResult(result);
     }
@@ -131,6 +157,6 @@ public abstract class AbstractMessageListener implements MessageListenerConcurre
         return ConsumeOrderlyStatus.SUSPEND_CURRENT_QUEUE_A_MOMENT;
     }
 
-    protected abstract Object consumeMessage(List<MessageExt> messageExtList, MessageQueue queue);
+    protected abstract Object consumeMessage(List<MessageExt> messageExtList, ConsumeConcurrentlyContext concurrentlyContext, ConsumeOrderlyContext orderlyContext);
 
 }

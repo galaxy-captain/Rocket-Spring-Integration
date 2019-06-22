@@ -4,7 +4,9 @@ import me.galaxy.rocket.annotation.RocketListener;
 import me.galaxy.rocket.annotation.RocketMQ;
 import me.galaxy.rocket.config.ConsumerConfig;
 import me.galaxy.rocket.config.NoRPCHook;
+import me.galaxy.rocket.exception.NoMethodParameterException;
 import me.galaxy.rocket.listener.AbstractMessageListener;
+import me.galaxy.rocket.listener.ConvertMessageListener;
 import me.galaxy.rocket.listener.wrapper.ConcurrentlyListenerWrapper;
 import me.galaxy.rocket.listener.wrapper.OrderlyListenerWrapper;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
@@ -94,8 +96,9 @@ public class RocketAnnotationBeanPostProcessor implements BeanPostProcessor, Bea
         Map<Method, RocketListener> annotatedMethods = rocketListenerAnnotatedMethod(bean.getClass());
 
         // 没有找到需要解析的注解
-        if (annotatedMethods.isEmpty())
+        if (annotatedMethods.isEmpty()) {
             return;
+        }
 
         RocketMQ rocketMQ = getRocketMQAnnotation(bean);
 
@@ -114,9 +117,9 @@ public class RocketAnnotationBeanPostProcessor implements BeanPostProcessor, Bea
 
     private void buildRocketPushConsumer(ConsumerConfig cfg, Object object, Method method) {
 
-        AbstractMessageListener listener = null;
-
         try {
+
+            AbstractMessageListener listener = new ConvertMessageListener(object, method, cfg);
 
             DefaultMQPushConsumer consumer;
 
@@ -159,7 +162,6 @@ public class RocketAnnotationBeanPostProcessor implements BeanPostProcessor, Bea
 
             logger.error(msg, e);
         }
-
     }
 
     /**
@@ -171,7 +173,9 @@ public class RocketAnnotationBeanPostProcessor implements BeanPostProcessor, Bea
      */
     private Method getInvocableMethod(Object object, Method method) {
 
-        if (object == null || method == null) return null;
+        if (object == null || method == null) {
+            return null;
+        }
 
         if (ClassUtils.isCglibProxy(object)) {
             method = MethodIntrospector.selectInvocableMethod(method, object.getClass());
