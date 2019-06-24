@@ -9,7 +9,7 @@ public interface ExceptionIgnore {
 
     /**
      * @param e
-     * @return {@code true} 忽略异常 {@code} 其他
+     * @return {@code true} 忽略异常 {@code false} 其他
      */
     boolean ignorable(Exception e);
 
