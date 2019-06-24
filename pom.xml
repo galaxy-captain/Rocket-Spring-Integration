@@ -6,14 +6,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>me.galaxy</groupId>
-    <artifactId>spring-rocketmq</artifactId>
+    <artifactId>spring-rocketmq-integration</artifactId>
+    <version>1.0</version>
+
     <packaging>pom</packaging>
-    <version>0.5</version>
 
     <modules>
         <module>sample</module>
-        <module>spring-rocketmq-integration</module>
-        <module>rocektmq-spring</module>
+        <module>spring-rocketmq</module>
     </modules>
 
     <properties>

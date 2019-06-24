@@ -7,20 +7,20 @@
 
     <groupId>me.galaxy</groupId>
     <artifactId>sample</artifactId>
-    <version>0.5</version>
+    <version>1.0</version>
 
     <dependencies>
 
-<!--        <dependency>-->
-<!--            <groupId>me.galaxy</groupId>-->
-<!--            <artifactId>spring-rocketmq-integration</artifactId>-->
-<!--            <version>0.5</version>-->
-<!--        </dependency>-->
-
         <dependency>
             <groupId>me.galaxy</groupId>
-            <artifactId>rocketmq-spring</artifactId>
-            <version>0.5</version>
+            <artifactId>spring-rocketmq</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aspects</artifactId>
+            <version>4.3.6.RELEASE</version>
         </dependency>
 
     </dependencies>

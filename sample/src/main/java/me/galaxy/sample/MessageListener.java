@@ -1,14 +1,14 @@
 package me.galaxy.sample;
 
-import com.alibaba.fastjson.JSONException;
-import me.galaxy.rocketmq.annotation.RocketListener;
-import me.galaxy.rocketmq.annotation.RocketNameServer;
+import me.galaxy.rocket.annotation.RocketConsumer;
+import me.galaxy.rocket.annotation.RocketListener;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
+import org.apache.rocketmq.client.consumer.listener.ConsumeOrderlyContext;
+import org.apache.rocketmq.client.consumer.listener.ConsumeOrderlyStatus;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -16,21 +16,23 @@ import java.util.List;
  * @Author galaxy-captain
  * @Date 2019-06-18 13:20
  **/
-@RocketNameServer
+@RocketConsumer(topic = "myTestTopic")
 @Service
 public class MessageListener {
 
-    @RocketListener(
-            consumerGroup = "test_consumer_group",
-            topic = "test_topic",
-            tag = "test_tag",
-            delayTimeLevel = 2,
-            ignoredExceptions = {JSONException.class}
-    )
-    public ConsumeConcurrentlyStatus service(SimpleMessage message, MessageExt messageExt, ConsumeConcurrentlyContext context) {
+    @RocketListener(consumerGroup = "test_group_1", tag = "test_tag_1", orderly = true, suspendTimeMillis = 1000)
+    public ConsumeOrderlyStatus service1(List<SimpleMessage> message, List<MessageExt> messageExt, ConsumeOrderlyContext context) throws Exception {
 
-        System.out.println(messageExt.getKeys());
-        System.out.println(message.toString());
+        System.out.println(message + "\n" + messageExt);
+
+        return ConsumeOrderlyStatus.SUCCESS;
+    }
+
+    @LogAspect
+    @RocketListener(consumerGroup = "test_group_2", tag = "test_tag_2", delayTimeLevel = 1)
+    public ConsumeConcurrentlyStatus service2(SimpleMessage message, MessageExt messageExt, ConsumeConcurrentlyContext context) throws Exception {
+
+        System.out.println(message + "\n" + messageExt);
 
         return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
     }

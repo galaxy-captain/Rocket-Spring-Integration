@@ -16,6 +16,8 @@
 
     <context:annotation-config/>
 
-<!--    <bean class="me.galaxy.rocketmq.RocketBootstrap"/>-->
+    <aop:aspectj-autoproxy/>
+
+    <bean class="me.galaxy.sample.MessageListenerLog"/>
 
 </beans>
