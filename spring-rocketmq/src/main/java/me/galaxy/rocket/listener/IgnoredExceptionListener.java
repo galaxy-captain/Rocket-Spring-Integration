@@ -44,21 +44,21 @@ public abstract class IgnoredExceptionListener extends AbstractMessageListener {
         try {
             // 执行下层业务逻辑
             return ignoredExceptionConsumerMessageWrapper(messageExtList, concurrentlyContext, orderlyContext);
-        } catch (Exception exception) {
+        } catch (Throwable throwable) {
 
             // 可以被忽略的异常
-            if (this.classifier.classify(exception)) {
+            if (this.classifier.classify(throwable)) {
                 return true;
             }
 
             // 根据异常的内容判断是否可以忽略
-            if (ignorable(exception)) {
+            if (ignorable(throwable)) {
                 return true;
             }
 
             // 打印异常信息
             if (logger.isErrorEnabled()) {
-                logger.error(exception.getMessage());
+                logger.error(throwable.toString());
             }
 
             // 异常导致消费失败
@@ -71,7 +71,7 @@ public abstract class IgnoredExceptionListener extends AbstractMessageListener {
         return new IgnorableExceptions(exceptions);
     }
 
-    private boolean ignorable(Exception e) {
+    private boolean ignorable(Throwable e) {
         for (ExceptionIgnore exceptionIgnore : exceptionIgnores) {
             if (exceptionIgnore.ignorable(e)) {
                 return true;
@@ -80,6 +80,6 @@ public abstract class IgnoredExceptionListener extends AbstractMessageListener {
         return false;
     }
 
-    protected abstract Object ignoredExceptionConsumerMessageWrapper(List<MessageExt> messageList, ConsumeConcurrentlyContext concurrentlyContext, ConsumeOrderlyContext orderlyContext) throws Exception;
+    protected abstract Object ignoredExceptionConsumerMessageWrapper(List<MessageExt> messageList, ConsumeConcurrentlyContext concurrentlyContext, ConsumeOrderlyContext orderlyContext) throws Throwable;
 
 }

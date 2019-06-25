@@ -176,6 +176,12 @@ public class RocketAnnotationBeanPostProcessor implements BeanPostProcessor, Bea
             // Consumer Group
             consumer.setConsumerGroup(cfg.getConsumerGroup());
 
+            // Batch Consume Max Size
+            consumer.setConsumeMessageBatchMaxSize(cfg.getMaxBatchSize());
+
+            // retry times
+            consumer.setMaxReconsumeTimes(cfg.getRetryConsumeTimes());
+
             // Instance
             if (!StringUtils.isEmpty(cfg.getInstance()))
                 consumer.setInstanceName(cfg.getInstance());

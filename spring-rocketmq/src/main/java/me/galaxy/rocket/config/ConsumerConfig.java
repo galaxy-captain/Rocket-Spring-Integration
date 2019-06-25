@@ -28,6 +28,10 @@ public class ConsumerConfig {
 
     private String tag;
 
+    private int maxBatchSize;
+
+    private int retryConsumeTimes;
+
     private int delayTimeLevel;
 
     private long suspendTimeMillis;
@@ -94,6 +98,22 @@ public class ConsumerConfig {
 
     public void setTag(String tag) {
         this.tag = tag;
+    }
+
+    public int getMaxBatchSize() {
+        return maxBatchSize;
+    }
+
+    public void setMaxBatchSize(int maxBatchSize) {
+        this.maxBatchSize = maxBatchSize;
+    }
+
+    public int getRetryConsumeTimes() {
+        return retryConsumeTimes;
+    }
+
+    public void setRetryConsumeTimes(int retryConsumeTimes) {
+        this.retryConsumeTimes = retryConsumeTimes;
     }
 
     public int getDelayTimeLevel() {

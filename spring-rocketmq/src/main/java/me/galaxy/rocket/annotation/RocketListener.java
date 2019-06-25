@@ -30,6 +30,10 @@ public @interface RocketListener {
 
     String tag() default "";
 
+    int maxBatchSize() default 1;
+
+    int retryTimes() default Integer.MIN_VALUE;
+
     int delayTimeLevel() default Integer.MIN_VALUE;
 
     int suspendTimeMillis() default Integer.MIN_VALUE;

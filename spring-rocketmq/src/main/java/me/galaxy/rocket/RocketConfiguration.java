@@ -17,6 +17,8 @@ public class RocketConfiguration {
 
     private String nameServer = "";
 
+    private int retryTimes = 16;
+
     private int delayTimeLevel = 0;
 
     private int suspendTimeMillis = -1;
@@ -37,6 +39,14 @@ public class RocketConfiguration {
 
     public void setNameServer(String nameServer) {
         this.nameServer = nameServer;
+    }
+
+    public int getRetryTimes() {
+        return retryTimes;
+    }
+
+    public void setRetryTimes(int retryTimes) {
+        this.retryTimes = retryTimes;
     }
 
     public int getDelayTimeLevel() {

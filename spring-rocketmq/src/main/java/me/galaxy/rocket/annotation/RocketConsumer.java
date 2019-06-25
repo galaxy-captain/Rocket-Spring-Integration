@@ -20,6 +20,8 @@ public @interface RocketConsumer {
 
     String topic() default "";
 
+    int retryTimes() default Integer.MIN_VALUE;
+
     int delayTimeLevel() default Integer.MIN_VALUE;
 
     int suspendTimeMillis() default Integer.MIN_VALUE;

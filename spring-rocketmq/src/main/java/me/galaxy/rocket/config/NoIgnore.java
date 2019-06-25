@@ -8,7 +8,7 @@ package me.galaxy.rocket.config;
 public class NoIgnore implements ExceptionIgnore {
 
     @Override
-    public boolean ignorable(Exception e) {
+    public boolean ignorable(Throwable e) {
         return false;
     }
 

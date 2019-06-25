@@ -1,7 +1,9 @@
 package me.galaxy.rocket.listener;
 
+import com.alibaba.fastjson.JSONException;
 import me.galaxy.rocket.config.ConsumerConfig;
 import me.galaxy.rocket.exception.DetectGenericTypeException;
+import me.galaxy.rocket.exception.JSONConvertException;
 import me.galaxy.rocket.exception.NoMethodParameterException;
 import me.galaxy.rocket.utils.MessageConverter;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
@@ -44,7 +46,7 @@ public class ConvertMessageListener extends IgnoredExceptionListener {
     }
 
     @Override
-    protected Object ignoredExceptionConsumerMessageWrapper(List<MessageExt> messageList, ConsumeConcurrentlyContext concurrentlyContext, ConsumeOrderlyContext orderlyContext) throws Exception {
+    protected Object ignoredExceptionConsumerMessageWrapper(List<MessageExt> messageList, ConsumeConcurrentlyContext concurrentlyContext, ConsumeOrderlyContext orderlyContext) throws Throwable {
         return invokeMethod(consumerClass, consumerMethod, messageList, concurrentlyContext, orderlyContext);
     }
 
@@ -52,7 +54,7 @@ public class ConvertMessageListener extends IgnoredExceptionListener {
                                 Method method,
                                 List<MessageExt> messageList,
                                 ConsumeConcurrentlyContext concurrentlyContext,
-                                ConsumeOrderlyContext orderlyContext) throws Exception {
+                                ConsumeOrderlyContext orderlyContext) throws Throwable {
 
 
         // 获取需要注入的数据类型
@@ -87,7 +89,7 @@ public class ConvertMessageListener extends IgnoredExceptionListener {
                                                  Object injectObject,
                                                  List<MessageExt> messageList,
                                                  ConsumeConcurrentlyContext concurrentlyContext,
-                                                 ConsumeOrderlyContext orderlyContext) {
+                                                 ConsumeOrderlyContext orderlyContext) throws Throwable {
 
         if (orderly != isOrderly) {
             throw new RuntimeException(simpleName + "：方法配置错误");
@@ -133,13 +135,16 @@ public class ConvertMessageListener extends IgnoredExceptionListener {
                 }
             }
 
-        } catch (IllegalAccessException | InvocationTargetException e) {
+        } catch (IllegalAccessException e) {
 
-            String em = String.format("%s：抛出异常", simpleName);
+            String em = String.format("%s：方法", simpleName);
 
-            logger.error(em, e);
+            logger.error(em);
 
-            throw new RuntimeException(e);
+            return false;
+
+        } catch (InvocationTargetException e) {
+            throw e.getTargetException();
         }
 
     }
@@ -200,7 +205,11 @@ public class ConvertMessageListener extends IgnoredExceptionListener {
             return msg;
         }
 
-        return MessageConverter.convertJSONToObject(msg, this.convertToClass);
+        try {
+            return MessageConverter.convertJSONToObject(msg, this.convertToClass);
+        } catch (JSONException e) {
+            throw new JSONConvertException(String.format("%s: JSON failed to convert to [%s]. Message=[%s]", simpleName, this.convertToClass.getName(), msg), e);
+        }
     }
 
     /**

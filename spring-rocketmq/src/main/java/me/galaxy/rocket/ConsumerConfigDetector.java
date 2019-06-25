@@ -36,6 +36,7 @@ public class ConsumerConfigDetector {
         }
 
         cfg.setNameServer(globalConfig.getNameServer());
+        cfg.setRetryConsumeTimes(globalConfig.getRetryTimes());
         cfg.setDelayTimeLevel(globalConfig.getDelayTimeLevel());
         cfg.setSuspendTimeMillis(globalConfig.getSuspendTimeMillis());
         cfg.setIgnorableExceptions(globalConfig.getIgnorableExceptions());
@@ -52,6 +53,10 @@ public class ConsumerConfigDetector {
 
         if (!StringUtils.isEmpty(classConfig.nameServer())) {
             cfg.setNameServer(classConfig.nameServer());
+        }
+
+        if (classConfig.retryTimes() > Integer.MIN_VALUE) {
+            cfg.setRetryConsumeTimes(classConfig.retryTimes());
         }
 
         if (classConfig.delayTimeLevel() > Integer.MIN_VALUE) {
@@ -99,6 +104,14 @@ public class ConsumerConfigDetector {
         }
 
         cfg.setTag(methodConfig.tag());
+
+        if (methodConfig.maxBatchSize() > 0) {
+            cfg.setMaxBatchSize(methodConfig.maxBatchSize());
+        }
+
+        if (methodConfig.retryTimes() > Integer.MIN_VALUE) {
+            cfg.setRetryConsumeTimes(methodConfig.retryTimes());
+        }
 
         if (methodConfig.delayTimeLevel() > Integer.MIN_VALUE) {
             cfg.setDelayTimeLevel(methodConfig.delayTimeLevel());
