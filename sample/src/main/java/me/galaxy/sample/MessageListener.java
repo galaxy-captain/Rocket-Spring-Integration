@@ -2,6 +2,7 @@ package me.galaxy.sample;
 
 import me.galaxy.rocket.annotation.RocketConsumer;
 import me.galaxy.rocket.annotation.RocketListener;
+import me.galaxy.rocket.exception.JSONConvertException;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
 import org.apache.rocketmq.client.consumer.listener.ConsumeOrderlyContext;
@@ -20,20 +21,51 @@ import java.util.List;
 @Service
 public class MessageListener {
 
-    @RocketListener(consumerGroup = "test_group_1", tag = "test_tag_1", orderly = true, suspendTimeMillis = 1000)
-    public ConsumeOrderlyStatus service1(List<SimpleMessage> message, List<MessageExt> messageExt, ConsumeOrderlyContext context) throws Exception {
 
-        System.out.println(message + "\n" + messageExt);
+    // =================================== 单条消费 ===================================
 
-        return ConsumeOrderlyStatus.SUCCESS;
+    @RocketListener(consumerGroup = "consumerGroup1_1", topic = "topic_test_1", tag = "tag_test_1")
+    public ConsumeConcurrentlyStatus service1(String message) throws Exception {
+        return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
     }
 
-    @LogAspect
-    @RocketListener(consumerGroup = "test_group_2", tag = "test_tag_2", delayTimeLevel = 1)
-    public ConsumeConcurrentlyStatus service2(SimpleMessage message, MessageExt messageExt, ConsumeConcurrentlyContext context) throws Exception {
+    @RocketListener(consumerGroup = "consumerGroup1_2", topic = "topic_test_1", tag = "tag_test_2")
+    public ConsumeConcurrentlyStatus service2(SimpleMessage message) throws Exception {
+        return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+    }
 
-        System.out.println(message + "\n" + messageExt);
+    @RocketListener(consumerGroup = "consumerGroup1_3", topic = "topic_test_1", tag = "tag_test_3")
+    public ConsumeConcurrentlyStatus service3(SimpleMessage message, MessageExt messageExt) throws Exception {
+        return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+    }
 
+    @RocketListener(consumerGroup = "consumerGroup4", topic = "topic_test_1", tag = "tag_test_4")
+    public ConsumeConcurrentlyStatus service4(SimpleMessage message, MessageExt messageExt, ConsumeConcurrentlyContext context) throws Exception {
+        return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+    }
+
+    // =================================== 多条消费 ===================================
+
+    @RocketListener(consumerGroup = "consumerGroup2_1", topic = "topic_test_2", tag = "tag_test_1", maxBatchSize = 8)
+    public ConsumeConcurrentlyStatus service4(List<String> messages) throws Exception {
+
+        System.out.println(messages);
+
+        return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+    }
+
+    @RocketListener(consumerGroup = "consumerGroup2_2", topic = "topic_test_2", tag = "tag_test_2", maxBatchSize = 8)
+    public ConsumeConcurrentlyStatus service2(List<SimpleMessage> messages) throws Exception {
+        return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+    }
+
+    @RocketListener(consumerGroup = "consumerGroup2_3", topic = "topic_test_2", tag = "tag_test_3", maxBatchSize = 8)
+    public ConsumeConcurrentlyStatus service3(List<SimpleMessage> messages, List<MessageExt> messageExts) throws Exception {
+        return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+    }
+
+    @RocketListener(consumerGroup = "consumerGroup2_4", topic = "topic_test_2", tag = "tag_test_4", maxBatchSize = 8)
+    public ConsumeConcurrentlyStatus service4(List<SimpleMessage> messages, List<MessageExt> messageExts, ConsumeConcurrentlyContext context) throws Exception {
         return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
     }
 
