@@ -14,11 +14,17 @@ import java.util.List;
  **/
 public class ConsumerConfig {
 
+    public static final boolean DEFAULT_ORDERLY = false;
+
+    public static final String DEFAULT_NAME_SERVER = "127.0.0.1:9876";
+
+    public static final String DEFAULT_TAG = "*";
+
     private String simpleName;
 
-    private boolean orderly;
+    private boolean orderly = DEFAULT_ORDERLY;
 
-    private String nameServer;
+    private String nameServer = DEFAULT_NAME_SERVER;
 
     private String instance;
 
@@ -26,7 +32,7 @@ public class ConsumerConfig {
 
     private String topic;
 
-    private String tag;
+    private String tag = DEFAULT_TAG;
 
     private int maxBatchSize;
 

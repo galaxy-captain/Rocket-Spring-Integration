@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Configuration;
  * @Author galaxy-captain
  * @Date 2019-06-21 14:00
  **/
-@Configuration
 public class RocketMQAutoConfiguration {
 
     @Bean
