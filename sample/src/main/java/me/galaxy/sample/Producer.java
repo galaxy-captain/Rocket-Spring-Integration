@@ -2,7 +2,7 @@ package me.galaxy.sample;
 
 /**
  * @Description
- * @Author duanxiaolei@bytedance.com
+ * @Author galaxy-captain
  * @Date 2019-06-25 17:27
  **/
 public class Producer {

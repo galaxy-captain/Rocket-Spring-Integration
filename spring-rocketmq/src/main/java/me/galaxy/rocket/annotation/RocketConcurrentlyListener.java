@@ -6,4 +6,5 @@ package me.galaxy.rocket.annotation;
  * @Date 2019-06-21 14:10
  **/
 public @interface RocketConcurrentlyListener {
+
 }

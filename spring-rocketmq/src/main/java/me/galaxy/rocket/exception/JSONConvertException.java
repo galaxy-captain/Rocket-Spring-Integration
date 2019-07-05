@@ -2,7 +2,7 @@ package me.galaxy.rocket.exception;
 
 /**
  * @Description
- * @Author duanxiaolei@bytedance.com
+ * @Author galaxy-captain
  * @Date 2019-06-25 18:14
  **/
 public class JSONConvertException extends RuntimeException {

@@ -113,7 +113,7 @@ public class RocketAnnotationBeanPostProcessor implements BeanPostProcessor, Bea
             Method method = entry.getKey();
             RocketListener rocketListener = entry.getValue();
 
-            ConsumerConfig config = buildConsumerConfig(configuration, rocketConsumer, rocketListener);
+            ConsumerConfig config = buildConsumerConfig(beanFactory, configuration, rocketConsumer, rocketListener);
             config.setSimpleName(generateMessageListenerSimpleName(bean, method, config));
 
             DefaultMQPushConsumer consumer = buildRocketPushConsumer(config, cglibEnhancedObject, method);

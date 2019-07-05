@@ -67,9 +67,11 @@ public abstract class AbstractMessageListener implements MessageListenerConcurre
 
     private ExceptionIgnore[] createExceptionIgnores(Class<? extends ExceptionIgnore>[] classes) {
 
-        ExceptionIgnore[] exceptionIgnores = new ExceptionIgnore[classes.length];
+        int size = (classes == null) ? 0 : classes.length;
 
-        for (int i = 0; i < classes.length; i++) {
+        ExceptionIgnore[] exceptionIgnores = new ExceptionIgnore[size];
+
+        for (int i = 0; i < size; i++) {
 
             try {
                 exceptionIgnores[i] = classes[i].newInstance();

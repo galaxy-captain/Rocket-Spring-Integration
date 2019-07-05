@@ -1,12 +1,10 @@
 package me.galaxy.rocket;
 
+import me.galaxy.rocket.config.ConsumerConfig;
 import me.galaxy.rocket.config.ExceptionIgnore;
 import me.galaxy.rocket.config.NoException;
 import me.galaxy.rocket.config.NoIgnore;
 import org.apache.rocketmq.acl.common.AclClientRPCHook;
-
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * @Description
@@ -15,7 +13,7 @@ import java.util.List;
  **/
 public class RocketConfiguration {
 
-    private String nameServer = "";
+    private String nameServer = ConsumerConfig.DEFAULT_NAME_SERVER;
 
     private int retryTimes = 16;
 

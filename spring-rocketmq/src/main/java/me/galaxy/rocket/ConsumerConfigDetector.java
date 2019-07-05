@@ -6,6 +6,7 @@ import me.galaxy.rocket.annotation.RocketListener;
 import me.galaxy.rocket.config.ConsumerConfig;
 import me.galaxy.rocket.config.NoException;
 import me.galaxy.rocket.config.NoIgnore;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.util.StringUtils;
 
 /**
@@ -15,27 +16,30 @@ import org.springframework.util.StringUtils;
  **/
 public class ConsumerConfigDetector {
 
-    public static ConsumerConfig buildConsumerConfig(RocketConfiguration globalConfig,
+    public static ConsumerConfig buildConsumerConfig(DefaultListableBeanFactory beanFactory,
+                                                     RocketConfiguration globalConfig,
                                                      RocketConsumer classConfig,
                                                      RocketListener methodConfig) {
 
         ConsumerConfig configuration = new ConsumerConfig();
 
-        setGlobalConfiguration(globalConfig, configuration);
-        setClassConfiguration(classConfig, configuration);
-        setMethodConfiguration(methodConfig, configuration);
+        setGlobalConfiguration(globalConfig, configuration, beanFactory);
+        setClassConfiguration(classConfig, configuration, beanFactory);
+        setMethodConfiguration(methodConfig, configuration, beanFactory);
 
         return configuration;
 
     }
 
-    private static void setGlobalConfiguration(RocketConfiguration globalConfig, ConsumerConfig cfg) {
+    private static void setGlobalConfiguration(RocketConfiguration globalConfig, ConsumerConfig cfg, DefaultListableBeanFactory beanFactory) {
 
         if (globalConfig == null) {
             return;
         }
 
-        cfg.setNameServer(globalConfig.getNameServer());
+        // 解析占位符
+        cfg.setNameServer(resolvePlaceholderWithProperties(beanFactory, globalConfig.getNameServer()));
+
         cfg.setRetryConsumeTimes(globalConfig.getRetryTimes());
         cfg.setDelayTimeLevel(globalConfig.getDelayTimeLevel());
         cfg.setSuspendTimeMillis(globalConfig.getSuspendTimeMillis());
@@ -45,14 +49,15 @@ public class ConsumerConfigDetector {
 
     }
 
-    private static void setClassConfiguration(RocketConsumer classConfig, ConsumerConfig cfg) {
+    private static void setClassConfiguration(RocketConsumer classConfig, ConsumerConfig cfg, DefaultListableBeanFactory beanFactory) {
 
         if (classConfig == null) {
             return;
         }
 
-        if (!StringUtils.isEmpty(classConfig.nameServer())) {
-            cfg.setNameServer(classConfig.nameServer());
+        String nameServer = resolvePlaceholderWithProperties(beanFactory, classConfig.nameServer());
+        if (!StringUtils.isEmpty(nameServer)) {
+            cfg.setNameServer(nameServer);
         }
 
         if (classConfig.retryTimes() > Integer.MIN_VALUE) {
@@ -67,8 +72,9 @@ public class ConsumerConfigDetector {
             cfg.setSuspendTimeMillis(classConfig.suspendTimeMillis());
         }
 
-        if (!StringUtils.isEmpty(classConfig.topic())) {
-            cfg.setTopic(classConfig.topic());
+        String topic = resolvePlaceholderWithProperties(beanFactory, classConfig.topic());
+        if (!StringUtils.isEmpty(topic)) {
+            cfg.setTopic(topic);
         }
 
         if (!(classConfig.ignoredExceptions().length == 1 && classConfig.ignoredExceptions()[0] == NoException.class)) {
@@ -81,7 +87,7 @@ public class ConsumerConfigDetector {
 
     }
 
-    private static void setMethodConfiguration(@NotNull RocketListener methodConfig, ConsumerConfig cfg) {
+    private static void setMethodConfiguration(@NotNull RocketListener methodConfig, ConsumerConfig cfg, DefaultListableBeanFactory beanFactory) {
 
         if (methodConfig == null) {
             return;
@@ -89,21 +95,26 @@ public class ConsumerConfigDetector {
 
         cfg.setOrderly(methodConfig.orderly());
 
-        if (!StringUtils.isEmpty(methodConfig.nameServer())) {
-            cfg.setNameServer(methodConfig.nameServer());
+        String nameServer = resolvePlaceholderWithProperties(beanFactory, methodConfig.nameServer());
+        if (!StringUtils.isEmpty(nameServer)) {
+            cfg.setNameServer(nameServer);
         }
 
-        if (!StringUtils.isEmpty(methodConfig.instance())) {
-            cfg.setInstance(methodConfig.instance());
+        String instanceName = resolvePlaceholderWithProperties(beanFactory, methodConfig.instance());
+        if (!StringUtils.isEmpty(instanceName)) {
+            cfg.setInstance(instanceName);
         }
 
-        cfg.setConsumerGroup(methodConfig.consumerGroup());
+        String consumerGroup = resolvePlaceholderWithProperties(beanFactory, methodConfig.consumerGroup());
+        cfg.setConsumerGroup(consumerGroup);
 
-        if (!StringUtils.isEmpty(methodConfig.topic())) {
-            cfg.setTopic(methodConfig.topic());
+        String topic = resolvePlaceholderWithProperties(beanFactory, methodConfig.topic());
+        if (!StringUtils.isEmpty(topic)) {
+            cfg.setTopic(topic);
         }
 
-        cfg.setTag(methodConfig.tag());
+        String tag = resolvePlaceholderWithProperties(beanFactory, methodConfig.tag());
+        cfg.setTag(tag);
 
         if (methodConfig.maxBatchSize() > 0) {
             cfg.setMaxBatchSize(methodConfig.maxBatchSize());
@@ -131,6 +142,21 @@ public class ConsumerConfigDetector {
 
         cfg.setHook(methodConfig.hook());
 
+    }
+
+    /**
+     * 如果是${...}占位符，则解析数据并方法，否则不做处理
+     *
+     * @param beanFactory
+     * @param value
+     * @return
+     */
+    public static String resolvePlaceholderWithProperties(DefaultListableBeanFactory beanFactory, String value) {
+        return isPlaceholderValue(value) ? beanFactory.resolveEmbeddedValue(value) : value;
+    }
+
+    public static boolean isPlaceholderValue(String value) {
+        return value.startsWith("${") && value.endsWith("}");
     }
 
 }

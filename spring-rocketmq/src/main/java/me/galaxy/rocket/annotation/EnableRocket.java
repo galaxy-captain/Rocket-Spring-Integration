@@ -14,6 +14,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE})
 @Import(RocketMQAutoConfiguration.class)
-public @interface EnableRocketMQ {
+public @interface EnableRocket {
 
 }
