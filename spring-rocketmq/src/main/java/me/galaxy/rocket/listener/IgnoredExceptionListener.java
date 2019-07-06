@@ -35,6 +35,9 @@ public abstract class IgnoredExceptionListener extends AbstractMessageListener {
         super(consumerClass, consumerMethod, config);
 
         this.ignorableExceptions = buildIgnorableExceptions(config.getIgnorableExceptions());
+
+        // 使用classify()方法时，需要被忽略的异常为true，其他异常为false
+        // ignorableExceptions是需要被忽略异常的集合
         this.classifier = new BinaryExceptionClassifier(this.ignorableExceptions, false);
     }
 
@@ -52,7 +55,7 @@ public abstract class IgnoredExceptionListener extends AbstractMessageListener {
             }
 
             // 根据异常的内容判断是否可以忽略
-            if (ignorable(throwable)) {
+            if (this.exceptionIgnores.length > 0 && ignorable(throwable)) {
                 return true;
             }
 

@@ -80,7 +80,7 @@ public abstract class AbstractMessageListener implements MessageListenerConcurre
                 if (logger.isErrorEnabled()) {
                     logger.error(
                             String.format(
-                                    "初始化%s[%s]时，创建%s失败",
+                                    "初始化%s[%s]时，创建[%s]失败",
                                     this.consumerClass.getClass().getName(),
                                     this.consumerMethod.getName(),
                                     classes[i].getName()

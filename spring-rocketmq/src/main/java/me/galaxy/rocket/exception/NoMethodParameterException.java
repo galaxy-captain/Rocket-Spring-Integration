@@ -12,4 +12,5 @@ public class NoMethodParameterException extends BeansException {
     public NoMethodParameterException(String message) {
         super(message);
     }
+
 }

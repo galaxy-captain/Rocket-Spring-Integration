@@ -3,6 +3,8 @@ package me.galaxy.rocket.annotation;
 import me.galaxy.rocket.config.ExceptionIgnore;
 import me.galaxy.rocket.config.NoException;
 import me.galaxy.rocket.config.NoIgnore;
+import me.galaxy.rocket.config.NoRPCHook;
+import org.apache.rocketmq.remoting.RPCHook;
 
 import java.lang.annotation.*;
 
@@ -26,8 +28,10 @@ public @interface RocketConsumer {
 
     int suspendTimeMillis() default Integer.MIN_VALUE;
 
-    Class<? extends Throwable>[] ignoredExceptions() default NoException.class;
+    Class<? extends Throwable>[] ignoredExceptions() default {};
 
-    Class<? extends ExceptionIgnore>[] exceptionIgnores() default NoIgnore.class;
+    Class<? extends ExceptionIgnore>[] exceptionIgnores() default {};
+
+    Class<? extends RPCHook> hook() default NoRPCHook.class;
 
 }

@@ -1,10 +1,13 @@
 package me.galaxy.rocket.exception;
 
-import me.galaxy.rocket.config.NoException;
-
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @Description 需要忽略的异常的集合
+ * @Author galaxy-captain
+ * @Date 2019-07-06 14:11
+ **/
 public class IgnorableExceptions extends HashMap<Class<? extends Throwable>, Boolean> {
 
     public IgnorableExceptions() {
@@ -18,7 +21,7 @@ public class IgnorableExceptions extends HashMap<Class<? extends Throwable>, Boo
     public IgnorableExceptions(Class<? extends Throwable>[] exceptions) {
         this();
 
-        if (exceptions != null && exceptions.length > 0 && exceptions[0] != NoException.class) {
+        if (exceptions != null && exceptions.length > 0) {
             addIgnorableExceptions(exceptions);
         }
 

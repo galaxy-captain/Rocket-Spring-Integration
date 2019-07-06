@@ -23,7 +23,15 @@ public class Main implements SendCallback {
 
         RocketTemplate rocketTemplate = context.getBean(RocketTemplate.class);
 
-        rocketTemplate.convertAndSend(new SimpleMessage(1), "topic_test_2", "tag_test_2");
+        rocketTemplate.convertAndSend(new SimpleMessage(1), "topic_test_2", "tag_test_2", new Main());
+        rocketTemplate.convertAndSend(new SimpleMessage(2), "topic_test_2", "tag_test_2", new Main());
+        rocketTemplate.convertAndSend(new SimpleMessage(3), "topic_test_2", "tag_test_2", new Main());
+        rocketTemplate.convertAndSend(new SimpleMessage(4), "topic_test_2", "tag_test_2", new Main());
+        rocketTemplate.convertAndSend(new SimpleMessage(5), "topic_test_2", "tag_test_2", new Main());
+        rocketTemplate.convertAndSend(new SimpleMessage(6), "topic_test_2", "tag_test_2", new Main());
+        rocketTemplate.convertAndSend(new SimpleMessage(7), "topic_test_2", "tag_test_2", new Main());
+
+
 
         rocketTemplate.convertAndSend("hello world1", "topic_test_2", "tag_test_1", new Main());
         rocketTemplate.convertAndSend("hello world2", "topic_test_2", "tag_test_1", new Main());

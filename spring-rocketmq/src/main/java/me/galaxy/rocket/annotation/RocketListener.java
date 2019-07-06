@@ -38,9 +38,9 @@ public @interface RocketListener {
 
     int suspendTimeMillis() default Integer.MIN_VALUE;
 
-    Class<? extends Throwable>[] ignoredExceptions() default NoException.class;
+    Class<? extends Throwable>[] ignoredExceptions() default {};
 
-    Class<? extends ExceptionIgnore>[] exceptionIgnores() default NoIgnore.class;
+    Class<? extends ExceptionIgnore>[] exceptionIgnores() default {};
 
     Class<? extends RPCHook> hook() default NoRPCHook.class;
 

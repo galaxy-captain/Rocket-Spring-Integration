@@ -21,9 +21,9 @@ public class RocketConfiguration {
 
     private int suspendTimeMillis = -1;
 
-    private Class<? extends Throwable>[] ignorableExceptions = new Class[]{NoException.class};
+    private Class<? extends Throwable>[] ignorableExceptions = new Class[0];
 
-    private Class<? extends ExceptionIgnore>[] exceptionIgnores = new Class[]{NoIgnore.class};
+    private Class<? extends ExceptionIgnore>[] exceptionIgnores = new Class[0];
 
     private AclClientRPCHook aclHook;
 

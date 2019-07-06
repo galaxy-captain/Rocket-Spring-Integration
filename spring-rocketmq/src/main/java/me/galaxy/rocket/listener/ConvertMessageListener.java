@@ -55,8 +55,6 @@ public class ConvertMessageListener extends IgnoredExceptionListener {
                                 List<MessageExt> messageList,
                                 ConsumeConcurrentlyContext concurrentlyContext,
                                 ConsumeOrderlyContext orderlyContext) throws Throwable {
-        // 获取需要注入的数据类型
-        // detectConvertClass(method);
 
         // 注入方法的数据
         Object injectClassObject;
@@ -71,6 +69,7 @@ public class ConvertMessageListener extends IgnoredExceptionListener {
             }
 
             injectClassObject = realList;
+
         } else {
             String msg = new String(messageList.get(0).getBody());
             injectClassObject = convertToClass(msg);

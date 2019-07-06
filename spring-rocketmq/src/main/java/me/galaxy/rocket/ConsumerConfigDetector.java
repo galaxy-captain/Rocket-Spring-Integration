@@ -77,11 +77,11 @@ public class ConsumerConfigDetector {
             cfg.setTopic(topic);
         }
 
-        if (!(classConfig.ignoredExceptions().length == 1 && classConfig.ignoredExceptions()[0] == NoException.class)) {
+        if (classConfig.ignoredExceptions().length > 0) {
             cfg.setIgnorableExceptions(classConfig.ignoredExceptions());
         }
 
-        if (!(classConfig.exceptionIgnores().length == 1 && classConfig.exceptionIgnores()[0] == NoIgnore.class)) {
+        if (classConfig.exceptionIgnores().length > 0) {
             cfg.setExceptionIgnores(classConfig.exceptionIgnores());
         }
 
@@ -132,11 +132,11 @@ public class ConsumerConfigDetector {
             cfg.setSuspendTimeMillis(methodConfig.suspendTimeMillis());
         }
 
-        if (!(methodConfig.ignoredExceptions().length == 1 && methodConfig.ignoredExceptions()[0] == NoException.class)) {
+        if (methodConfig.ignoredExceptions().length > 0) {
             cfg.setIgnorableExceptions(methodConfig.ignoredExceptions());
         }
 
-        if (!(methodConfig.exceptionIgnores().length == 1 && methodConfig.exceptionIgnores()[0] == NoIgnore.class)) {
+        if (methodConfig.exceptionIgnores().length > 0) {
             cfg.setExceptionIgnores(methodConfig.exceptionIgnores());
         }
 
