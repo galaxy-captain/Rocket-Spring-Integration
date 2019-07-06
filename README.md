@@ -32,12 +32,13 @@ public class MessageConsumer{
     
    // orderly = true 顺序消费
    @RocketListener(orderly = true, consumerGroup = "myGroup", topic = "myTopic",tag = "myTag")
-   public ConsumeConcurrentlyStatus service(Message msg, MessageExt msgx, ConsumeConcurrentlyContext context) {
-      return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+   public ConsumeOrderlyStatus service(Message msg, MessageExt msgx, ConsumeOrderlyContext context) {
+      return ConsumeOrderlyStatus.SUCCESS;
    }
    
 }
 ```
+
 #### 2. 延迟重试
 2.1 并发消费 <br>
 @RocketListener(delayTimeLevel)支持延迟重试时间级别的定义。真实延迟时间由RocketMQ配置文件中messageDelayLevel决定。
@@ -67,7 +68,37 @@ public class MessageConsumer{
 * @RocketListener - 方法级别
 
 优先级：方法级 > 类级 > 全局级，高优先级配置覆盖低优先级配置。
-
+#### 5. Properties占位符配置
+与@Value注解中，占位符使用一致，可以加载任意Properties键值
+```java
+@RocketListener(topic = "${rocketmq.topic}")
+```
+#### 6. 消费监听器多种返回值类型
+6.1 ConsumeConcurrentlyStatus类型
+```java
+@RocketListener(consumerGroup = "myGroup", topic = "myTopic",tag = "myTag")
+  public ConsumeConcurrentlyStatus service(Message msg, MessageExt msgx, ConsumeConcurrentlyContext context) {
+     return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+}
+```
+6.2 Boolean类型
+* true为消费成功
+* false为消费失败
+```java
+@RocketListener(consumerGroup = "myGroup", topic = "myTopic",tag = "myTag")
+public boolean service(Message msg, ConsumeConcurrentlyContext context) {
+     return true;
+}
+```
+6.1 Void类型
+* 默认消费成功
+* 抛出异常消费失败
+```java
+@RocketListener(consumerGroup = "myGroup", topic = "myTopic",tag = "myTag")
+public void service(Message msg, MessageExt msgx) {
+    
+}
+```
 ## 使用教程
 
 1. 使用@EnableRocketMQ开启功能
