@@ -4,6 +4,7 @@ import me.galaxy.rocket.annotation.RocketConsumer;
 import me.galaxy.rocket.annotation.RocketListener;
 import me.galaxy.rocket.config.ConsumerConfig;
 import me.galaxy.rocket.config.NoRPCHook;
+import me.galaxy.rocket.exception.DetectGenericTypeException;
 import me.galaxy.rocket.listener.AbstractMessageListener;
 import me.galaxy.rocket.listener.ConvertMessageListener;
 import me.galaxy.rocket.listener.wrapper.ConcurrentlyListenerWrapper;
@@ -183,8 +184,9 @@ public class RocketAnnotationBeanPostProcessor implements BeanPostProcessor, Bea
             consumer.setMaxReconsumeTimes(cfg.getRetryConsumeTimes());
 
             // Instance
-            if (!StringUtils.isEmpty(cfg.getInstance()))
+            if (!StringUtils.isEmpty(cfg.getInstance())) {
                 consumer.setInstanceName(cfg.getInstance());
+            }
 
             // Orderly Listener or Concurrently Listener
             if (cfg.isOrderly()) {
@@ -213,6 +215,17 @@ public class RocketAnnotationBeanPostProcessor implements BeanPostProcessor, Bea
 
             String msg = String.format(
                     "创建RocketMQ Consumer过程中，初始化RPCHook失败，NameServer=%s，ConsumerGroup=%s，Topic=%s，Tag=%s",
+                    cfg.getNameServer(),
+                    cfg.getConsumerGroup(),
+                    cfg.getTopic(),
+                    cfg.getTag()
+            );
+
+            logger.error(msg, e);
+        } catch (DetectGenericTypeException e) {
+
+            String msg = String.format(
+                    "创建RocketMQ Consumer过程中，获取消息转换类型失败，NameServer=%s，ConsumerGroup=%s，Topic=%s，Tag=%s",
                     cfg.getNameServer(),
                     cfg.getConsumerGroup(),
                     cfg.getTopic(),

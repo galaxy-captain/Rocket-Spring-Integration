@@ -18,7 +18,7 @@ public class RocketConsumerSpringLifecycle implements SmartLifecycle {
 
     private static final Logger logger = LoggerFactory.getLogger(RocketConsumerSpringLifecycle.class);
 
-    @Autowired
+    @Autowired(required = false)
     private Map<String, DefaultMQPushConsumer> consumers;
 
     private boolean isRunning = false;
@@ -30,6 +30,10 @@ public class RocketConsumerSpringLifecycle implements SmartLifecycle {
 
     @Override
     public void start() {
+
+        if (consumers == null) {
+            return;
+        }
 
         for (Map.Entry<String, DefaultMQPushConsumer> entry : consumers.entrySet()) {
             startConsumer(entry.getKey(), entry.getValue());
@@ -57,6 +61,10 @@ public class RocketConsumerSpringLifecycle implements SmartLifecycle {
 
     @Override
     public void stop() {
+
+        if (consumers == null) {
+            return;
+        }
 
         for (Map.Entry<String, DefaultMQPushConsumer> entry : consumers.entrySet()) {
             shutdownConsumer(entry.getValue());

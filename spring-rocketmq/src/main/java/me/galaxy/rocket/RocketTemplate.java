@@ -37,7 +37,7 @@ public class RocketTemplate implements InitializingBean {
 
     private int retryTimesWhenSendAsyncFailed = -1;
 
-    private int sendMsgTimeout;
+    private int sendMsgTimeout = 3000;
 
     private DefaultMQProducer producer = null;
 
@@ -72,6 +72,7 @@ public class RocketTemplate implements InitializingBean {
     // =========================== 同步发送消息 ===========================
 
     // 发送消息
+
     public SendResult convertAndSend(Object msg, String topic) {
         return convertAndSend(msg, topic, "*");
     }
@@ -97,6 +98,7 @@ public class RocketTemplate implements InitializingBean {
     }
 
     // 顺序发送消息
+
     public SendResult convertAndSend(Object msg, String topic, MessageQueueSelector selector, int order) {
         return convertAndSend(msg, topic, "*", selector, order);
     }
@@ -123,9 +125,11 @@ public class RocketTemplate implements InitializingBean {
 
         try {
             if (selector == null) {
-                return producer.send(message, timeout); // 发送消息
+                // 发送消息
+                return producer.send(message, timeout);
             } else {
-                return producer.send(message, selector, order, timeout); // 顺序发送消息
+                // 顺序发送消息
+                return producer.send(message, selector, order, timeout);
             }
         } catch (MQClientException | RemotingException | MQBrokerException | InterruptedException e) {
             logger.error(e.getMessage());
@@ -137,6 +141,7 @@ public class RocketTemplate implements InitializingBean {
     // =========================== 异步发送消息 ===========================
 
     // 发送消息
+
     public void convertAndSend(Object msg, String topic, SendCallback callback) {
         convertAndSend(msg, topic, "*", callback);
     }
@@ -177,20 +182,25 @@ public class RocketTemplate implements InitializingBean {
 
         Message message = new Message();
 
-        if (delayTimeLevel > 0)
+        if (delayTimeLevel > 0) {
             message.setDelayTimeLevel(delayTimeLevel);
+        }
 
-        if (!StringUtils.isEmpty(topic))
+        if (!StringUtils.isEmpty(topic)) {
             message.setTopic(topic);
+        }
 
-        if (!StringUtils.isEmpty(tags))
+        if (!StringUtils.isEmpty(tags)) {
             message.setTags(tags);
+        }
 
-        if (!StringUtils.isEmpty(keys))
+        if (!StringUtils.isEmpty(keys)) {
             message.setKeys(keys);
+        }
 
-        if (body.length > 0)
+        if (body.length > 0) {
             message.setBody(body);
+        }
 
         return message;
     }
@@ -228,23 +238,29 @@ public class RocketTemplate implements InitializingBean {
             producer = new DefaultMQProducer(aclHook);
         }
 
-        if (!StringUtils.isEmpty(this.nameServer))
+        if (!StringUtils.isEmpty(this.nameServer)) {
             producer.setNamesrvAddr(this.nameServer);
+        }
 
-        if (!StringUtils.isEmpty(this.producerGroup))
+        if (!StringUtils.isEmpty(this.producerGroup)) {
             producer.setProducerGroup(this.producerGroup);
+        }
 
-        if (!StringUtils.isEmpty(this.instanceName))
+        if (!StringUtils.isEmpty(this.instanceName)) {
             producer.setInstanceName(this.instanceName);
+        }
 
-        if (this.retryTimesWhenSendAsyncFailed > -1)
+        if (this.retryTimesWhenSendAsyncFailed > -1) {
             producer.setRetryTimesWhenSendAsyncFailed(this.retryTimesWhenSendAsyncFailed);
+        }
 
-        if (this.retryTimesWhenSendFailed > -1)
+        if (this.retryTimesWhenSendFailed > -1) {
             producer.setRetryTimesWhenSendFailed(this.retryTimesWhenSendFailed);
+        }
 
-        if (this.sendMsgTimeout > 0)
+        if (this.sendMsgTimeout > 0) {
             producer.setSendMsgTimeout(this.sendMsgTimeout);
+        }
 
         return producer;
     }

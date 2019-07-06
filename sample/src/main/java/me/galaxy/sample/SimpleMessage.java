@@ -7,17 +7,17 @@ package me.galaxy.sample;
  **/
 public class SimpleMessage {
 
-    private String id;
+    private int id;
 
-    public SimpleMessage(String id) {
+    public SimpleMessage(int id) {
         this.id = id;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 

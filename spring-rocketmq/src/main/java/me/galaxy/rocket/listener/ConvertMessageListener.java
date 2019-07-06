@@ -38,7 +38,7 @@ public class ConvertMessageListener extends IgnoredExceptionListener {
 
     private boolean isOrderly = false;
 
-    public ConvertMessageListener(Object consumerClass, Method consumerMethod, ConsumerConfig config) throws NoMethodParameterException {
+    public ConvertMessageListener(Object consumerClass, Method consumerMethod, ConsumerConfig config) throws DetectGenericTypeException {
         super(consumerClass, consumerMethod, config);
 
         // 初始化调用方法
@@ -55,10 +55,8 @@ public class ConvertMessageListener extends IgnoredExceptionListener {
                                 List<MessageExt> messageList,
                                 ConsumeConcurrentlyContext concurrentlyContext,
                                 ConsumeOrderlyContext orderlyContext) throws Throwable {
-
-
         // 获取需要注入的数据类型
-        detectConvertClass(method);
+        // detectConvertClass(method);
 
         // 注入方法的数据
         Object injectClassObject;
@@ -152,7 +150,7 @@ public class ConvertMessageListener extends IgnoredExceptionListener {
     /**
      * 初始化调用方法需要的动作
      */
-    private void initMethodInvokeAction(Method method) throws NoMethodParameterException {
+    private void initMethodInvokeAction(Method method) throws DetectGenericTypeException {
 
         Class<?>[] parameterTypes = method.getParameterTypes();
 
@@ -166,7 +164,10 @@ public class ConvertMessageListener extends IgnoredExceptionListener {
             );
         }
 
-        // 方法中只有数据类型时，直接调用
+        // 获取需要注入的数据类型
+        detectConvertClass(method);
+
+        // 方法参数中只有消息类型，直接调用
         if (parameterTypes.length == 1) {
             return;
         }
@@ -180,6 +181,7 @@ public class ConvertMessageListener extends IgnoredExceptionListener {
             return;
         }
 
+        // 第二个参数是MessageExt
         this.hasMessageExt = true;
 
         // 只有两个参数
@@ -208,14 +210,14 @@ public class ConvertMessageListener extends IgnoredExceptionListener {
         try {
             return MessageConverter.convertJSONToObject(msg, this.convertToClass);
         } catch (JSONException e) {
-            throw new JSONConvertException(String.format("%s: JSON failed to convert to [%s]. Message=[%s]", simpleName, this.convertToClass.getName(), msg), e);
+            throw new JSONConvertException(String.format("%s: 消息转换为[%s]失败. Message=[%s]", simpleName, this.convertToClass.getName(), msg), e);
         }
     }
 
     /**
      * 获取需要转换的类型
      */
-    private void detectConvertClass(Method method) throws Exception {
+    private void detectConvertClass(Method method) throws DetectGenericTypeException {
         Class<?> parameterType = method.getParameterTypes()[0];
         if (parameterType == List.class) {
             this.isConvertToList = true;

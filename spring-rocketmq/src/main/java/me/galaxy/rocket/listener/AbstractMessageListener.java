@@ -161,6 +161,13 @@ public abstract class AbstractMessageListener implements MessageListenerConcurre
         return ConsumeOrderlyStatus.SUSPEND_CURRENT_QUEUE_A_MOMENT;
     }
 
+    /**
+     *
+     * @param messageExtList
+     * @param concurrentlyContext
+     * @param orderlyContext
+     * @return
+     */
     protected abstract Object consumeMessage(List<MessageExt> messageExtList, ConsumeConcurrentlyContext concurrentlyContext, ConsumeOrderlyContext orderlyContext);
 
 }

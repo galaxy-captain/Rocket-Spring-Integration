@@ -1,6 +1,7 @@
 package me.galaxy.sample;
 
 import me.galaxy.rocket.RocketTemplate;
+import me.galaxy.rocket.utils.MessageConverter;
 import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.slf4j.Logger;
@@ -22,6 +23,8 @@ public class Main implements SendCallback {
 
         RocketTemplate rocketTemplate = context.getBean(RocketTemplate.class);
 
+        rocketTemplate.convertAndSend(new SimpleMessage(1), "topic_test_2", "tag_test_2");
+
         rocketTemplate.convertAndSend("hello world1", "topic_test_2", "tag_test_1", new Main());
         rocketTemplate.convertAndSend("hello world2", "topic_test_2", "tag_test_1", new Main());
         rocketTemplate.convertAndSend("hello world3", "topic_test_2", "tag_test_1", new Main());
@@ -33,7 +36,6 @@ public class Main implements SendCallback {
         rocketTemplate.convertAndSend("hello world9", "topic_test_2", "tag_test_1", new Main());
         rocketTemplate.convertAndSend("hello world10", "topic_test_2", "tag_test_1", new Main());
 
-
     }
 
     public void onSuccess(SendResult sendResult) {
@@ -43,4 +45,5 @@ public class Main implements SendCallback {
     public void onException(Throwable e) {
 
     }
+
 }

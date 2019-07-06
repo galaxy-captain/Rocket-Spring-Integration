@@ -17,7 +17,7 @@ import java.util.List;
  * @Author galaxy-captain
  * @Date 2019-06-18 13:20
  **/
-@RocketConsumer(nameServer = "127.0.0.1:9876", topic = "${mq.rocket.topic}")
+@RocketConsumer(topic = "${mq.rocket.topic}")
 @Service
 public class MessageListener {
 
@@ -61,6 +61,9 @@ public class MessageListener {
     @LogAspect
     @RocketListener(consumerGroup = "consumerGroup2_2", topic = "topic_test_2", tag = "tag_test_2", maxBatchSize = 8)
     public ConsumeConcurrentlyStatus service2(List<SimpleMessage> messages) throws Exception {
+
+        System.out.println(messages);
+
         return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
     }
 

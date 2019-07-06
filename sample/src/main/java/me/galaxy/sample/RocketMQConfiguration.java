@@ -1,8 +1,10 @@
 package me.galaxy.sample;
 
+import me.galaxy.rocket.RocketConfiguration;
 import me.galaxy.rocket.RocketTemplate;
 import me.galaxy.rocket.annotation.EnableRocket;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -15,20 +17,24 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RocketMQConfiguration {
 
-//    @Bean
-//    public RocketConfiguration rocketConfiguration() {
-//
-//        RocketConfiguration rocketConfiguration = new RocketConfiguration();
-//        rocketConfiguration.setNameServer("127.0.0.1:9876");
-//
-//        return rocketConfiguration;
-//    }
+    @Value("${mq.rocket.nameServer}")
+    private String nameServer;
+
+    @Bean
+    public RocketConfiguration rocketConfiguration() {
+
+        RocketConfiguration rocketConfiguration = new RocketConfiguration();
+        rocketConfiguration.setRetryTimes(3);
+        rocketConfiguration.setDelayTimeLevel(1);
+
+        return rocketConfiguration;
+    }
 
     @Bean
     public DefaultMQProducer defaultMQProducer() {
 
         DefaultMQProducer producer = new DefaultMQProducer();
-        producer.setNamesrvAddr("127.0.0.1:9876");
+        producer.setNamesrvAddr(nameServer);
         producer.setProducerGroup("producerGroup");
 
         return producer;
@@ -37,6 +43,11 @@ public class RocketMQConfiguration {
     @Bean
     public RocketTemplate rocketTemplate(DefaultMQProducer producer) {
         return new RocketTemplate(producer);
+    }
+
+    @Bean
+    public MessageListenerLog messageListenerLog() {
+        return new MessageListenerLog();
     }
 
 }
