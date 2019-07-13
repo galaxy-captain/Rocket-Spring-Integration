@@ -90,13 +90,26 @@ public boolean service(Message msg, ConsumeConcurrentlyContext context) {
      return true;
 }
 ```
-6.1 Void类型
+6.3 Void类型
 * 默认消费成功
 * 抛出异常消费失败
 ```java
 @RocketListener(consumerGroup = "myGroup", topic = "myTopic",tag = "myTag")
 public void service(Message msg, MessageExt msgx) {
     
+}
+```
+#### 7. ACL配置
+在类上使用@RocketACL注解，配置类级别的ACL授权信息
+```java
+@RocketACL(accessKey = "accessKey", secretKey = "accessKey")
+public class MessageConsumer{
+   
+   @RocketListener(consumerGroup = "myGroup", topic = "myTopic",tag = "myTag")
+   public boolean service(Message message) {
+      return true;
+   }
+   
 }
 ```
 ## 使用教程
