@@ -1,12 +1,10 @@
 package me.galaxy.sample;
 
+import me.galaxy.rocket.annotation.RocketACL;
 import me.galaxy.rocket.annotation.RocketConsumer;
 import me.galaxy.rocket.annotation.RocketListener;
-import me.galaxy.rocket.exception.JSONConvertException;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
-import org.apache.rocketmq.client.consumer.listener.ConsumeOrderlyContext;
-import org.apache.rocketmq.client.consumer.listener.ConsumeOrderlyStatus;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +15,7 @@ import java.util.List;
  * @Author galaxy-captain
  * @Date 2019-06-18 13:20
  **/
+@RocketACL(accessKey = "accessKey", secretKey = "accessKey")
 @RocketConsumer(topic = "${mq.rocket.topic}")
 @Service
 public class MessageListener {

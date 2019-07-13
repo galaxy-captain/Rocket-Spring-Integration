@@ -1,5 +1,6 @@
 package me.galaxy.rocket;
 
+import me.galaxy.rocket.annotation.RocketACL;
 import me.galaxy.rocket.annotation.RocketConsumer;
 import me.galaxy.rocket.annotation.RocketListener;
 import me.galaxy.rocket.config.ConsumerConfig;
@@ -9,6 +10,8 @@ import me.galaxy.rocket.listener.AbstractMessageListener;
 import me.galaxy.rocket.listener.ConvertMessageListener;
 import me.galaxy.rocket.listener.wrapper.ConcurrentlyListenerWrapper;
 import me.galaxy.rocket.listener.wrapper.OrderlyListenerWrapper;
+import org.apache.rocketmq.acl.common.AclClientRPCHook;
+import org.apache.rocketmq.acl.common.SessionCredentials;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.slf4j.Logger;
@@ -24,8 +27,8 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 import static me.galaxy.rocket.ConsumerConfigDetector.buildConsumerConfig;
-import static me.galaxy.rocket.RocketAnnotationDetector.getRocketMQAnnotation;
-import static me.galaxy.rocket.RocketAnnotationDetector.rocketListenerAnnotatedMethod;
+import static me.galaxy.rocket.ConsumerConfigDetector.resolvePlaceholderWithProperties;
+import static me.galaxy.rocket.RocketAnnotationDetector.*;
 
 /**
  * @Description
@@ -108,6 +111,9 @@ public class RocketAnnotationBeanPostProcessor implements BeanPostProcessor, Bea
 
         // 获取类上的配置项
         RocketConsumer rocketConsumer = getRocketMQAnnotation(bean);
+        RocketACL acl = getAclConfigurationAnnotation(bean);
+
+        AclClientRPCHook aclHook = generateRocketAclHook(acl);
 
         for (Map.Entry<Method, RocketListener> entry : annotatedMethods.entrySet()) {
 
@@ -116,6 +122,11 @@ public class RocketAnnotationBeanPostProcessor implements BeanPostProcessor, Bea
 
             ConsumerConfig config = buildConsumerConfig(beanFactory, configuration, rocketConsumer, rocketListener);
             config.setSimpleName(generateMessageListenerSimpleName(bean, method, config));
+
+            // 如果aclHook存在，则覆盖全局aclHook
+            if (aclHook != null) {
+                config.setAclHook(aclHook);
+            }
 
             DefaultMQPushConsumer consumer = buildRocketPushConsumer(config, cglibEnhancedObject, method);
 
@@ -236,6 +247,29 @@ public class RocketAnnotationBeanPostProcessor implements BeanPostProcessor, Bea
         }
 
         return null;
+    }
+
+    /**
+     * 构建RocketMQ的ACL
+     */
+    private AclClientRPCHook generateRocketAclHook(RocketACL acl) {
+
+        if (acl == null) {
+            return null;
+        }
+
+        String accessKey = resolvePlaceholderWithProperties(beanFactory, acl.accessKey());
+        String secretKey = resolvePlaceholderWithProperties(beanFactory, acl.secretKey());
+
+        if (StringUtils.isEmpty(accessKey) || StringUtils.isEmpty(secretKey)) {
+            return null;
+        }
+
+        SessionCredentials credentials = new SessionCredentials();
+        credentials.setAccessKey(accessKey);
+        credentials.setSecretKey(secretKey);
+
+        return new AclClientRPCHook(credentials);
     }
 
 }

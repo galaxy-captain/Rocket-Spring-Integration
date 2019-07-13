@@ -61,7 +61,7 @@ public abstract class IgnoredExceptionListener extends AbstractMessageListener {
 
             // 打印异常信息
             if (logger.isErrorEnabled()) {
-                logger.error(throwable.toString());
+                logger.error("Throwable", throwable);
             }
 
             // 异常导致消费失败

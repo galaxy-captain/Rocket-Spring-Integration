@@ -1,6 +1,5 @@
 package me.galaxy.rocket;
 
-import com.sun.istack.internal.NotNull;
 import me.galaxy.rocket.annotation.RocketConsumer;
 import me.galaxy.rocket.annotation.RocketListener;
 import me.galaxy.rocket.config.ConsumerConfig;
@@ -87,7 +86,7 @@ public class ConsumerConfigDetector {
 
     }
 
-    private static void setMethodConfiguration(@NotNull RocketListener methodConfig, ConsumerConfig cfg, DefaultListableBeanFactory beanFactory) {
+    private static void setMethodConfiguration(RocketListener methodConfig, ConsumerConfig cfg, DefaultListableBeanFactory beanFactory) {
 
         if (methodConfig == null) {
             return;
@@ -145,7 +144,7 @@ public class ConsumerConfigDetector {
     }
 
     /**
-     * 如果是${...}占位符，则解析数据并方法，否则不做处理
+     * 如果是${...}占位符，则解析数据并返回，否则不做处理
      *
      * @param beanFactory
      * @param value

@@ -1,5 +1,6 @@
 package me.galaxy.rocket;
 
+import me.galaxy.rocket.annotation.RocketACL;
 import me.galaxy.rocket.annotation.RocketConsumer;
 import me.galaxy.rocket.annotation.RocketListener;
 import org.springframework.beans.BeansException;
@@ -34,6 +35,15 @@ public class RocketAnnotationDetector {
         }
 
         return object.getClass().getAnnotation(RocketConsumer.class);
+    }
+
+    public static RocketACL getAclConfigurationAnnotation(Object object) {
+
+        if (object == null) {
+            return null;
+        }
+
+        return object.getClass().getAnnotation(RocketACL.class);
     }
 
     public static RocketConfiguration getRocketConfiguration(BeanFactory beanFactory) {
