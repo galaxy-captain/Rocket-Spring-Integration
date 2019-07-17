@@ -113,7 +113,9 @@ public class ConsumerConfigDetector {
         }
 
         String tag = resolvePlaceholderWithProperties(beanFactory, methodConfig.tag());
-        cfg.setTag(tag);
+        if (!StringUtils.isEmpty(tag)) {
+            cfg.setTag(tag);
+        }
 
         if (methodConfig.maxBatchSize() > 0) {
             cfg.setMaxBatchSize(methodConfig.maxBatchSize());

@@ -4,6 +4,7 @@ import me.galaxy.rocket.annotation.RocketACL;
 import me.galaxy.rocket.annotation.RocketConsumer;
 import me.galaxy.rocket.annotation.RocketListener;
 import me.galaxy.rocket.config.ConsumerConfig;
+import me.galaxy.rocket.config.InfoConfig;
 import me.galaxy.rocket.config.NoRPCHook;
 import me.galaxy.rocket.exception.DetectGenericTypeException;
 import me.galaxy.rocket.listener.AbstractMessageListener;
@@ -41,7 +42,7 @@ public class RocketAnnotationBeanPostProcessor implements BeanPostProcessor, Bea
 
     private DefaultListableBeanFactory beanFactory;
 
-    private boolean hasInitConfiguration = false;
+    private volatile boolean hasInitConfiguration = false;
 
     private RocketConfiguration configuration;
 
@@ -132,11 +133,14 @@ public class RocketAnnotationBeanPostProcessor implements BeanPostProcessor, Bea
 
             // 注册Consumer监听器失败
             if (consumer == null) {
+                logger.info(InfoConfig.initConsumerFailed(config.getTopic(), config.getTag()));
                 continue;
             }
 
             // 注册Consumer到BeanFactory容器
             registerConsumer(beanFactory, generateConsumerName(beanName, bean, method, config), consumer);
+
+            logger.info(InfoConfig.initConsumerSucceed(config.getTopic(), config.getTag()));
 
         }
 

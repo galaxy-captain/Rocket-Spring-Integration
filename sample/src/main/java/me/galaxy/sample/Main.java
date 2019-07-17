@@ -17,11 +17,17 @@ public class Main implements SendCallback {
 
     public static final Logger logger = LoggerFactory.getLogger(Main.class);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
 
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:applicationContext.xml");
 
         RocketTemplate rocketTemplate = context.getBean(RocketTemplate.class);
+
+        SendResult result = rocketTemplate.convertAndSend(new SimpleMessage(1), "topic_test_2", "tag_test_2");
+
+        Thread.sleep(5000);
+
+        context.stop();
 
         rocketTemplate.convertAndSend(new SimpleMessage(1), "topic_test_2", "tag_test_2", new Main());
         rocketTemplate.convertAndSend(new SimpleMessage(2), "topic_test_2", "tag_test_2", new Main());
@@ -43,6 +49,7 @@ public class Main implements SendCallback {
         rocketTemplate.convertAndSend("hello world8", "topic_test_2", "tag_test_1", new Main());
         rocketTemplate.convertAndSend("hello world9", "topic_test_2", "tag_test_1", new Main());
         rocketTemplate.convertAndSend("hello world10", "topic_test_2", "tag_test_1", new Main());
+
 
     }
 

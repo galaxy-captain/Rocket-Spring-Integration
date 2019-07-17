@@ -17,7 +17,6 @@ import static me.galaxy.sample.RocketMQConstant.*;
 @Component
 public class ConcurrentMessageListener {
 
-
     @RocketListener(consumerGroup = SINGLE_MESSAGE_LISTENER_CONSUMER_GROUP)
     public void singleMessageListener(String msg, MessageExt me, ConsumeConcurrentlyContext context) {
         System.out.println(msg);
