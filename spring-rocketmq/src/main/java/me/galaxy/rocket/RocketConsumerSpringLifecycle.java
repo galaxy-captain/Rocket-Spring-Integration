@@ -44,7 +44,6 @@ public class RocketConsumerSpringLifecycle implements SmartLifecycle {
         }
 
         this.isRunning = true;
-
     }
 
     private void startConsumer(String name, DefaultMQPushConsumer consumer) {
@@ -73,7 +72,7 @@ public class RocketConsumerSpringLifecycle implements SmartLifecycle {
             logger.info("关闭RocketMQ Consumer监听器[共{}个]", consumers == null ? 0 : consumers.size());
         }
 
-        if (consumers == null) {
+        if (consumers == null|| consumers.size() == 0) {
             return;
         }
 
@@ -82,7 +81,6 @@ public class RocketConsumerSpringLifecycle implements SmartLifecycle {
         }
 
         this.isRunning = false;
-
     }
 
     private void shutdownConsumer(DefaultMQPushConsumer consumer) {
