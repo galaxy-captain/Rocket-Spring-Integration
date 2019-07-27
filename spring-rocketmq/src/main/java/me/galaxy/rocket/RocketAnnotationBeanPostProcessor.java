@@ -143,8 +143,6 @@ public class RocketAnnotationBeanPostProcessor implements BeanPostProcessor, Bea
                 logger.info("初始化RocketMQ Consumer监听器[consumerGroup={},topic={},tag={}]", config.getConsumerGroup(), config.getTopic(), config.getTag());
             }
 
-            logger.info(InfoConfig.initConsumerSucceed(config.getTopic(), config.getTag()));
-
         }
 
     }

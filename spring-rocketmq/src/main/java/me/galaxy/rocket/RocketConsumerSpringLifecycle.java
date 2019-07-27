@@ -35,7 +35,7 @@ public class RocketConsumerSpringLifecycle implements SmartLifecycle {
             logger.info("启动RocketMQ Consumer监听器[共{}个]", consumers == null ? 0 : consumers.size());
         }
 
-        if (consumers == null) {
+        if (consumers == null || consumers.size() == 0) {
             return;
         }
 
@@ -72,19 +72,22 @@ public class RocketConsumerSpringLifecycle implements SmartLifecycle {
             logger.info("关闭RocketMQ Consumer监听器[共{}个]", consumers == null ? 0 : consumers.size());
         }
 
-        if (consumers == null|| consumers.size() == 0) {
+        if (consumers == null || consumers.size() == 0) {
             return;
         }
 
         for (Map.Entry<String, DefaultMQPushConsumer> entry : consumers.entrySet()) {
-            shutdownConsumer(entry.getValue());
+            shutdownConsumer(entry.getKey(), entry.getValue());
         }
 
         this.isRunning = false;
     }
 
-    private void shutdownConsumer(DefaultMQPushConsumer consumer) {
+    private void shutdownConsumer(String name, DefaultMQPushConsumer consumer) {
         consumer.shutdown();
+
+        String[] infos = name.split("-");
+        logger.info(String.format("关闭RocketMQ Consumer监听器[%s]:%s，Topic=%s，Tag=%s - 成功", infos[1], infos[2], infos[3], infos[4]));
     }
 
     @Override
