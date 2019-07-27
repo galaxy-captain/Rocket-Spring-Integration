@@ -16,7 +16,7 @@ import java.util.List;
  * @Date 2019-06-18 13:20
  **/
 @RocketACL(accessKey = "accessKey", secretKey = "accessKey")
-@RocketConsumer(topic = "${mq.rocket.topic}")
+@RocketConsumer(nameServer = "${mq.rocket.nameServer}", topic = "${mq.rocket.topic}")
 @Service
 public class MessageListener {
 

@@ -8,9 +8,9 @@ package me.galaxy.rocket.config;
 public interface ExceptionIgnore {
 
     /**
-     * @param e
+     * @param throwable 异常
      * @return {@code true} 忽略异常 {@code false} 其他
      */
-    boolean ignorable(Throwable e);
+    boolean ignorable(Throwable throwable);
 
 }

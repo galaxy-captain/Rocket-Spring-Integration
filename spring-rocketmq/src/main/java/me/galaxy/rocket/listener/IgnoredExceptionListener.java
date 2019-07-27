@@ -59,11 +59,6 @@ public abstract class IgnoredExceptionListener extends AbstractMessageListener {
                 return true;
             }
 
-            // 打印异常信息
-            if (logger.isErrorEnabled()) {
-                logger.error("Throwable", throwable);
-            }
-
             // 异常导致消费失败
             return false;
         }
@@ -74,9 +69,14 @@ public abstract class IgnoredExceptionListener extends AbstractMessageListener {
         return new IgnorableExceptions(exceptions);
     }
 
-    private boolean ignorable(Throwable e) {
+    /**
+     * 判断是否可以忽略异常
+     * @param throwable 异常信息
+     * @return {@code true} 忽略异常 {@code false} 其他
+     */
+    private boolean ignorable(Throwable throwable) {
         for (ExceptionIgnore exceptionIgnore : exceptionIgnores) {
-            if (exceptionIgnore.ignorable(e)) {
+            if (exceptionIgnore.ignorable(throwable)) {
                 return true;
             }
         }

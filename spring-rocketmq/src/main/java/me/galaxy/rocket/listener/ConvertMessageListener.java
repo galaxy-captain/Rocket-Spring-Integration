@@ -50,84 +50,80 @@ public class ConvertMessageListener extends IgnoredExceptionListener {
         return invokeMethod(consumerClass, consumerMethod, messageList, concurrentlyContext, orderlyContext);
     }
 
-    private Object invokeMethod(Object object,
+    private Object invokeMethod(Object clazz,
                                 Method method,
                                 List<MessageExt> messageList,
                                 ConsumeConcurrentlyContext concurrentlyContext,
                                 ConsumeOrderlyContext orderlyContext) throws Throwable {
 
         // 注入方法的数据
-        Object injectClassObject;
+        Object injectObject;
 
         if (this.isConvertToList) {
 
-            List realList = new ArrayList(messageList.size());
+            List<Object> realList = new ArrayList<>(messageList.size());
 
             for (MessageExt messageExt : messageList) {
                 String msg = new String(messageExt.getBody());
                 realList.add(convertToClass(msg));
             }
 
-            injectClassObject = realList;
+            injectObject = realList;
 
         } else {
             String msg = new String(messageList.get(0).getBody());
-            injectClassObject = convertToClass(msg);
+            injectObject = convertToClass(msg);
         }
 
-        return invokeMethodWithAllParameters(object, method, injectClassObject, messageList, concurrentlyContext, orderlyContext);
+        return invokeMethodWithAllParameters(clazz, method, injectObject, messageList, concurrentlyContext, orderlyContext);
     }
 
     /**
      * 调用方法
      */
-    private Object invokeMethodWithAllParameters(Object object,
+    private Object invokeMethodWithAllParameters(Object clazz,
                                                  Method method,
                                                  Object injectObject,
                                                  List<MessageExt> messageList,
                                                  ConsumeConcurrentlyContext concurrentlyContext,
                                                  ConsumeOrderlyContext orderlyContext) throws Throwable {
 
-        if (orderly != isOrderly) {
-            throw new RuntimeException(simpleName + "：方法配置错误");
-        }
-
         try {
 
             if (isConvertToList) {
                 if (hasMessageExt) {
                     if (isConcurrently) {
-                        return method.invoke(object, injectObject, messageList, concurrentlyContext);
+                        return method.invoke(clazz, injectObject, messageList, concurrentlyContext);
                     } else if (isOrderly) {
-                        return method.invoke(object, injectObject, messageList, orderlyContext);
+                        return method.invoke(clazz, injectObject, messageList, orderlyContext);
                     } else {
-                        return method.invoke(object, injectObject, messageList);
+                        return method.invoke(clazz, injectObject, messageList);
                     }
                 } else {
                     if (isConcurrently) {
-                        return method.invoke(object, injectObject, concurrentlyContext);
+                        return method.invoke(clazz, injectObject, concurrentlyContext);
                     } else if (isOrderly) {
-                        return method.invoke(object, injectObject, orderlyContext);
+                        return method.invoke(clazz, injectObject, orderlyContext);
                     } else {
-                        return method.invoke(object, injectObject);
+                        return method.invoke(clazz, injectObject);
                     }
                 }
             } else {
                 if (hasMessageExt) {
                     if (isConcurrently) {
-                        return method.invoke(object, injectObject, messageList.get(0), concurrentlyContext);
+                        return method.invoke(clazz, injectObject, messageList.get(0), concurrentlyContext);
                     } else if (isOrderly) {
-                        return method.invoke(object, injectObject, messageList.get(0), orderlyContext);
+                        return method.invoke(clazz, injectObject, messageList.get(0), orderlyContext);
                     } else {
-                        return method.invoke(object, injectObject, messageList.get(0));
+                        return method.invoke(clazz, injectObject, messageList.get(0));
                     }
                 } else {
                     if (isConcurrently) {
-                        return method.invoke(object, injectObject, concurrentlyContext);
+                        return method.invoke(clazz, injectObject, concurrentlyContext);
                     } else if (isOrderly) {
-                        return method.invoke(object, injectObject, orderlyContext);
+                        return method.invoke(clazz, injectObject, orderlyContext);
                     } else {
-                        return method.invoke(object, injectObject);
+                        return method.invoke(clazz, injectObject);
                     }
                 }
             }

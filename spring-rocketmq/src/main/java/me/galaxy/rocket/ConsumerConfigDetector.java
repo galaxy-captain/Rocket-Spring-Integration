@@ -3,8 +3,6 @@ package me.galaxy.rocket;
 import me.galaxy.rocket.annotation.RocketConsumer;
 import me.galaxy.rocket.annotation.RocketListener;
 import me.galaxy.rocket.config.ConsumerConfig;
-import me.galaxy.rocket.config.NoException;
-import me.galaxy.rocket.config.NoIgnore;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.util.StringUtils;
 
@@ -84,6 +82,10 @@ public class ConsumerConfigDetector {
             cfg.setExceptionIgnores(classConfig.exceptionIgnores());
         }
 
+        if (classConfig.hook().length > 0) {
+            cfg.setHook(classConfig.hook());
+        }
+
     }
 
     private static void setMethodConfiguration(RocketListener methodConfig, ConsumerConfig cfg, DefaultListableBeanFactory beanFactory) {
@@ -113,7 +115,9 @@ public class ConsumerConfigDetector {
         }
 
         String tag = resolvePlaceholderWithProperties(beanFactory, methodConfig.tag());
-        cfg.setTag(tag);
+        if (!StringUtils.isEmpty(tag)) {
+            cfg.setTag(tag);
+        }
 
         if (methodConfig.maxBatchSize() > 0) {
             cfg.setMaxBatchSize(methodConfig.maxBatchSize());
@@ -139,16 +143,14 @@ public class ConsumerConfigDetector {
             cfg.setExceptionIgnores(methodConfig.exceptionIgnores());
         }
 
-        cfg.setHook(methodConfig.hook());
+        if (methodConfig.hook().length > 0) {
+            cfg.setHook(methodConfig.hook());
+        }
 
     }
 
     /**
      * 如果是${...}占位符，则解析数据并返回，否则不做处理
-     *
-     * @param beanFactory
-     * @param value
-     * @return
      */
     public static String resolvePlaceholderWithProperties(DefaultListableBeanFactory beanFactory, String value) {
         return isPlaceholderValue(value) ? beanFactory.resolveEmbeddedValue(value) : value;

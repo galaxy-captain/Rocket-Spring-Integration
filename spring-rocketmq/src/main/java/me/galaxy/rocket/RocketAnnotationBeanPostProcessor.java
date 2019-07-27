@@ -4,7 +4,6 @@ import me.galaxy.rocket.annotation.RocketACL;
 import me.galaxy.rocket.annotation.RocketConsumer;
 import me.galaxy.rocket.annotation.RocketListener;
 import me.galaxy.rocket.config.ConsumerConfig;
-import me.galaxy.rocket.config.NoRPCHook;
 import me.galaxy.rocket.exception.DetectGenericTypeException;
 import me.galaxy.rocket.listener.AbstractMessageListener;
 import me.galaxy.rocket.listener.ConvertMessageListener;
@@ -68,11 +67,8 @@ public class RocketAnnotationBeanPostProcessor implements BeanPostProcessor, Bea
 
     private void buildRocketMQConsumerWithAnnotation(DefaultListableBeanFactory beanFactory, Object bean, String beanName) {
 
-        // 获取全局配置类
-        RocketConfiguration configuration = getRocketConfiguration();
-
         // 根据@RocketListener注解注册Consumer
-        buildConsumerWithRocketListenerAnnotation(beanFactory, bean, beanName, configuration);
+        buildConsumerWithRocketListenerAnnotation(beanFactory, bean, beanName);
 
     }
 
@@ -96,7 +92,7 @@ public class RocketAnnotationBeanPostProcessor implements BeanPostProcessor, Bea
     /**
      * 根据@RocketListener注解信息自动注册Consumer
      */
-    private void buildConsumerWithRocketListenerAnnotation(DefaultListableBeanFactory beanFactory, Object bean, String beanName, RocketConfiguration configuration) {
+    private void buildConsumerWithRocketListenerAnnotation(DefaultListableBeanFactory beanFactory, Object bean, String beanName) {
 
         // 获取类中使用@RocketListener注解的方法
         Map<Method, RocketListener> annotatedMethods = rocketListenerAnnotatedMethod(bean.getClass());
@@ -105,6 +101,9 @@ public class RocketAnnotationBeanPostProcessor implements BeanPostProcessor, Bea
         if (annotatedMethods.isEmpty()) {
             return;
         }
+
+        // 获取全局配置类
+        RocketConfiguration configuration = getRocketConfiguration();
 
         // 获取Spring增强过的Bean
         Object cglibEnhancedObject = beanFactory.getBean(beanName);
@@ -137,6 +136,10 @@ public class RocketAnnotationBeanPostProcessor implements BeanPostProcessor, Bea
 
             // 注册Consumer到BeanFactory容器
             registerConsumer(beanFactory, generateConsumerName(beanName, bean, method, config), consumer);
+
+            if (logger.isInfoEnabled()) {
+                logger.info("初始化RocketMQ Consumer监听器[consumerGroup={},topic={},tag={}]", config.getConsumerGroup(), config.getTopic(), config.getTag());
+            }
 
         }
 
@@ -176,8 +179,8 @@ public class RocketAnnotationBeanPostProcessor implements BeanPostProcessor, Bea
             // RPCHook
             if (cfg.getAclHook() != null) {
                 consumer = new DefaultMQPushConsumer(cfg.getAclHook());
-            } else if (cfg.getHook() != NoRPCHook.class) {
-                consumer = new DefaultMQPushConsumer(cfg.getHook().newInstance());
+            } else if (cfg.getHook().length > 0) {
+                consumer = new DefaultMQPushConsumer(cfg.getHook()[0].newInstance());
             } else {
                 consumer = new DefaultMQPushConsumer();
             }

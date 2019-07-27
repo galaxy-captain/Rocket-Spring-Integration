@@ -2,8 +2,6 @@ package me.galaxy.rocket;
 
 import me.galaxy.rocket.config.ConsumerConfig;
 import me.galaxy.rocket.config.ExceptionIgnore;
-import me.galaxy.rocket.config.NoException;
-import me.galaxy.rocket.config.NoIgnore;
 import org.apache.rocketmq.acl.common.AclClientRPCHook;
 
 /**

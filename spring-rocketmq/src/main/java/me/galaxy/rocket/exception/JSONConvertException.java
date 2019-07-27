@@ -8,6 +8,7 @@ package me.galaxy.rocket.exception;
 public class JSONConvertException extends RuntimeException {
 
     public JSONConvertException() {
+
     }
 
     public JSONConvertException(String message) {

@@ -31,6 +31,10 @@ public class RocketConsumerSpringLifecycle implements SmartLifecycle {
     @Override
     public void start() {
 
+        if (logger.isInfoEnabled()) {
+            logger.info("启动RocketMQ Consumer监听器[共{}个]", consumers == null ? 0 : consumers.size());
+        }
+
         if (consumers == null) {
             return;
         }
@@ -40,27 +44,34 @@ public class RocketConsumerSpringLifecycle implements SmartLifecycle {
         }
 
         this.isRunning = true;
+
     }
 
     private void startConsumer(String name, DefaultMQPushConsumer consumer) {
 
+        String[] infos = name.split("-");
+
         try {
             consumer.start();
+            logger.info(String.format("启动RocketMQ Consumer监听器[%s]:%s，Topic=%s，Tag=%s - 成功", infos[1], infos[2], infos[3], infos[4]));
         } catch (MQClientException e) {
-            String[] infos = name.split("-");
-            String em = String.format("启动[%s]:%s，Topic=%s，Tag=%s的Consumer失败", infos[1], infos[2], infos[3], infos[4]);
-            logger.error(em, e);
+            logger.warn(String.format("启动RocketMQ Consumer监听器[%s]:%s，Topic=%s，Tag=%s - 失败", infos[1], infos[2], infos[3], infos[4]), e);
         }
 
     }
 
     @Override
     public void stop(Runnable callback) {
-
+        stop();
+        callback.run();
     }
 
     @Override
     public void stop() {
+
+        if (logger.isInfoEnabled()) {
+            logger.info("关闭RocketMQ Consumer监听器[共{}个]", consumers == null ? 0 : consumers.size());
+        }
 
         if (consumers == null) {
             return;
@@ -71,6 +82,7 @@ public class RocketConsumerSpringLifecycle implements SmartLifecycle {
         }
 
         this.isRunning = false;
+
     }
 
     private void shutdownConsumer(DefaultMQPushConsumer consumer) {

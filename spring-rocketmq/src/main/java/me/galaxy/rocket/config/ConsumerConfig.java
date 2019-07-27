@@ -42,11 +42,11 @@ public class ConsumerConfig {
 
     private long suspendTimeMillis;
 
-    private Class<? extends Throwable>[] ignorableExceptions;
+    private Class<? extends Throwable>[] ignorableExceptions = new Class[0];
 
-    private Class<? extends ExceptionIgnore>[] exceptionIgnores;
+    private Class<? extends ExceptionIgnore>[] exceptionIgnores = new Class[0];
 
-    private Class<? extends RPCHook> hook;
+    private Class<? extends RPCHook>[] hook = new Class[0];
 
     private AclClientRPCHook aclHook;
 
@@ -154,11 +154,11 @@ public class ConsumerConfig {
         this.exceptionIgnores = exceptionIgnores;
     }
 
-    public Class<? extends RPCHook> getHook() {
+    public Class<? extends RPCHook>[] getHook() {
         return hook;
     }
 
-    public void setHook(Class<? extends RPCHook> hook) {
+    public void setHook(Class<? extends RPCHook>[] hook) {
         this.hook = hook;
     }
 

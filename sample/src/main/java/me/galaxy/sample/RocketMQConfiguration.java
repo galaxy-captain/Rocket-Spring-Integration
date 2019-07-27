@@ -20,15 +20,15 @@ public class RocketMQConfiguration {
     @Value("${mq.rocket.nameServer}")
     private String nameServer;
 
-    @Bean
-    public RocketConfiguration rocketConfiguration() {
-
-        RocketConfiguration rocketConfiguration = new RocketConfiguration();
-        rocketConfiguration.setRetryTimes(3);
-        rocketConfiguration.setDelayTimeLevel(1);
-
-        return rocketConfiguration;
-    }
+//    @Bean
+//    public RocketConfiguration rocketConfiguration() {
+//
+//        RocketConfiguration rocketConfiguration = new RocketConfiguration();
+//        rocketConfiguration.setRetryTimes(3);
+//        rocketConfiguration.setDelayTimeLevel(1);
+//
+//        return rocketConfiguration;
+//    }
 
     @Bean
     public DefaultMQProducer defaultMQProducer() {
