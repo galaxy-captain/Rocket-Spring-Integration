@@ -130,12 +130,6 @@ public class RocketAnnotationBeanPostProcessor implements BeanPostProcessor, Bea
 
             DefaultMQPushConsumer consumer = buildRocketPushConsumer(config, cglibEnhancedObject, method);
 
-            // 注册Consumer监听器失败
-            if (consumer == null) {
-                logger.info(InfoConfig.initConsumerFailed(config.getTopic(), config.getTag()));
-                continue;
-            }
-
             // 注册Consumer到BeanFactory容器
             registerConsumer(beanFactory, generateConsumerName(beanName, bean, method, config), consumer);
 
